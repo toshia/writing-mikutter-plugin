@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>Writing mikutter plugin</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content=""/>
+<meta name="author" content="@toshi_a"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">Writing mikutter plugin</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 はじめに </a>
+<ul>
+<li><a href="#sec-1.1">1.1 想定する読者 </a></li>
+<li><a href="#sec-1.2">1.2 プラグインの動かし方 </a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 特定の時間にツイートする </a>
+<ul>
+<li><a href="#sec-2.1">2.1 コード例 </a></li>
+<li><a href="#sec-2.2">2.2 解説 </a>
+<ul>
+<li><a href="#sec-2.2.1">2.2.1 メソッドの定義 </a></li>
+<li><a href="#sec-2.2.2">2.2.2 文字列を投稿する </a></li>
+<li><a href="#sec-2.2.3">2.2.3 Reserver 予約実行 </a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 特殊なタイムライン </a>
+<ul>
+<li><a href="#sec-3.1">3.1 コード例 </a></li>
+<li><a href="#sec-3.2">3.2 解説 </a>
+<ul>
+<li><a href="#sec-3.2.1">3.2.1 イベントの待受 </a></li>
+<li><a href="#sec-3.2.2">3.2.2 タイムライン </a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 スマートなミュート機能 </a>
+<ul>
+<li><a href="#sec-4.1">4.1 コード例 </a></li>
+<li><a href="#sec-4.2">4.2 解説 </a>
+<ul>
+<li><a href="#sec-4.2.1">4.2.1 イベントフィルタ </a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 STOT形式でコピー </a>
+<ul>
+<li><a href="#sec-5.1">5.1 コード例 </a></li>
+<li><a href="#sec-5.2">5.2 解説 </a>
+<ul>
+<li><a href="#sec-5.2.1">5.2.1 STOTについて </a></li>
+<li><a href="#sec-5.2.2">5.2.2 mikutterコマンド </a></li>
+<li><a href="#sec-5.2.3">5.2.3 Message </a></li>
+<li><a href="#sec-5.2.4">5.2.4 User </a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 あとがき </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> はじめに </h2>
+<div class="outline-text-2" id="text-1">
+
+<p>Rubyでmikutterを拡張する方法についてです。
+</p>
+<p>
+mikutterはサードパーティの「プラグイン」を追加して、あとから機能を追
+加することができます。
+</p>
+<p>
+本文章では、いくつかの事例を取り上げて、プラグインを作るための大まかな方
+法を説明します。
+</p>
+<p>
+サンプルコードは、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> にこのドキュメントの最新版があるので、そこから取得してください。
+</p>
+
+</div>
+
+<div id="outline-container-1.1" class="outline-3">
+<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 想定する読者 </h3>
+<div class="outline-text-3" id="text-1.1">
+
+<p>一応、これを読むような人は大抵プログラミングの経験があると思いますが、何らかの言語を理解している人なら、Rubyを勉強しながら簡単にプラグインを書くことができると思います。
+基本的なプログラミングの概念については説明していません。世の中にはRubyでプログラミングを学ぶことができる文献がいくつもありますので、プログラミング自体の話はそういうのをどうぞ。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-1.2" class="outline-3">
+<h3 id="sec-1.2"><span class="section-number-3">1.2</span> プラグインの動かし方 </h3>
+<div class="outline-text-3" id="text-1.2">
+
+<p>mikutterのプラグインをインストールするには、 ~/.mikutter/plugin の直下に拡張子 <b>.rb</b> で終わるファイルを置くか、
+プラグイン名のディレクトリを作成し、その中に <b>プラグイン名.rb</b> という名前のファイルを設置する方法があります。
+後者の方法を使うと、gitなどでプラグインごとにバージョン管理が容易になりますし、プラグイン自体を複数のファイルに分割することができます。
+</p>
+<p>
+尚、 ~/.mikutter/plugin は、最初は存在しないので、以下のようにして作成します。
+</p>
+<pre class="example">
+$ mkdir ~/.mikutter/plugin
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 特定の時間にツイートする </h2>
+<div class="outline-text-2" id="text-2">
+
+<p>このセクションでは、特定の時間に定型文をツイートする、botのようなプラグインを作成します。
+</p>
+</div>
+
+<div id="outline-container-2.1" class="outline-3">
+<h3 id="sec-2.1"><span class="section-number-3">2.1</span> コード例 </h3>
+<div class="outline-text-3" id="text-2.1">
+
+
+
+
+<pre class="example"># -*- coding: utf-8 -*-
+# say "よるほー"
+# よるほーの例です。あくまでReserverのデモンストレーション用に作りました。
+# なので実戦投入はしないこと。よるほーは自分でタイミングを合わせることにこそ意義があるのです。
+
+Plugin.create :yoruho do
+  def main
+    Reserver.new(nextyrhtime){
+      say_yoruho(Post.primary_service)
+      sleep 1
+      main } end
+
+  # 次回のよるほー時間を取得
+  def nextyrhtime
+    now = Time.new
+    result = Time.local(now.year, now.month, now.day, 0, 0)
+    while result &lt; now
+      result += 86400 end
+    result end
+
+  # よるほーとつぶやく
+  def say_yoruho(service)
+    service.update(:message =&gt; 'ておほー') end
+
+  main
+end
+</pre>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2.2" class="outline-3">
+<h3 id="sec-2.2"><span class="section-number-3">2.2</span> 解説 </h3>
+<div class="outline-text-3" id="text-2.2">
+
+<p>ほぼすべてのプラグインは、以下のテンプレートから作り始めることになります。
+</p>
+<pre class="example">
+Plugin.create :プラグイン名 do
+  (プラグインの定義)
+end
+</pre>
+
+
+<p>
+Plugin.create は、プラグインをコアに登録します。また、ブロック内でプラグインを実装するための様々なメソッドを提供しています。
+この中で変数や関数を定義すれば外のスコープも汚さないので、基本的にはこのブロックの中だけでプラグインは完結させるべきです。
+</p>
+
+</div>
+
+<div id="outline-container-2.2.1" class="outline-4">
+<h4 id="sec-2.2.1"><span class="section-number-4">2.2.1</span> メソッドの定義 </h4>
+<div class="outline-text-4" id="text-2.2.1">
+
+<p>ブロックの中は、すぐにPluginのインスタンスの中で評価されます。defで
+メソッドを定義して、メソッドの内外で呼ぶことができます。例では main
+と next_yrh_time と say_yoruho を定義していますね。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2.2.2" class="outline-4">
+<h4 id="sec-2.2.2"><span class="section-number-4">2.2.2</span> 文字列を投稿する </h4>
+<div class="outline-text-4" id="text-2.2.2">
+
+<ul>
+<li id="sec-2.2.2.1">Postオブジェクト <br/>
+自動投稿を実現するためには、Postクラスのインスタンスを得ます。
+Postクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
+ントの数だけインスタンスがあります。なので、プラグインがこのクラス
+をnewすることはありません。
+
+<p>
+これを書いている現在では、mikutterは１つのアカウントでしかサインアッ
+プできないということになっているので、以下のように書けば、Postクラ
+スを得ることができると覚えておいてください。
+</p>
+<pre class="example">
+Post.primary_service
+</pre>
+
+
+<p>
+mikutterはそのうち複垢対応しますが、そうなったらこのメソッドは、現
+在アクティブな(選択されている)アカウントのPostを返します。
+</p>
+</li>
+<li id="sec-2.2.2.2">update <br/>
+Post#update で、ツイートが投稿されます。
+
+<pre class="example">
+Post.primary_service.update(:message =&gt; "ツイートの本文")
+</pre>
+
+
+<p>
+ツイートの投稿は非同期で行われるので、処理がここで止まるというこ
+とはありません。
+</p>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.2.3" class="outline-4">
+<h4 id="sec-2.2.3"><span class="section-number-4">2.2.3</span> Reserver 予約実行 </h4>
+<div class="outline-text-4" id="text-2.2.3">
+
+<p>特定の時間に処理を実行したいことがあります。今回の場合だと、毎日
+0:00:00に、よるほーとつぶやくコードを実行したいわけです。そういう
+時は、mikutterが提供しているReserverを使います。
+</p>
+<p>
+String, Time, Integerのいずれかの値を渡します。
+</p>
+<p>
+Stringの場合はTime.parse()された値が使われ、Timeを渡すと、その時刻
+になったら実行します。過去の時刻を渡すとすぐに実行されます。
+</p>
+<pre class="example">
+Reserver.new("10:00"){ 朝10時に実行 }
+</pre>
+
+
+<p>
+Integerの場合は、その秒数待ってから実行します。
+</p>
+<pre class="example">
+Reserver.new(30){ 30秒後に実行 }
+Reserver.new(HYDE){ 156秒後に実行 }
+</pre>
+
+
+<p>
+今のところ、Reserverのブロックは、メインスレッド以外のスレッドで実
+行されます。非同期処理によるバグには気をつけてください。
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 特殊なタイムライン </h2>
+<div class="outline-text-2" id="text-3">
+
+<p>現在のmikutterのUIは、以下のような構成です。
+</p>
+<p>
+<img src="window-hierarchy.png"  alt="window-hierarchy.png" />
+</p>
+<p>
+ウィンドウが一つ有り、その中にユーザは任意の個数のペインを作ります。
+ペインの中には１つ以上のタブがあり、タブの中身はプラグイン次第です
+が、基本的にはタイムラインが入っているはずです。
+</p>
+<p>
+このセクションでは、特殊な抽出条件を持ったタイムラインを作成します。
+タイムラインを用いたあらゆるプラグインに応用できる知識です。
+</p>
+
+</div>
+
+<div id="outline-container-3.1" class="outline-3">
+<h3 id="sec-3.1"><span class="section-number-3">3.1</span> コード例 </h3>
+<div class="outline-text-3" id="text-3.1">
+
+
+
+
+
+<pre class="example"># -*- coding: utf-8 -*-
+# mikutterについてフォロイーが言及したら、しばらくTLに入れる
+
+Plugin.create :gossip_detector do
+
+  EXPIRE = 300                  # 5 min
+
+  main = Gtk::TimeLine.new()
+  gossip_users = {}
+
+  # TLタブの登録
+  onboot do |service|
+    Plugin.call(:mui_tab_regist, main, 'Gossip Detector', MUI::Skin.get("timeline.png"))
+  end
+
+  # ツイートの受信、振り分け
+  onupdate do |service, messages|
+    main.add message.select { |m|
+      if m.to_s =~ /mikutter|みくった/
+        gossip_users[m.user] = Time.now + EXPIRE
+        true
+      else
+        gossip_users.has_key?(m.user) and gossip_users[m.user] &gt; m[:created]
+      end
+    }
+  end
+
+end
+
+</pre>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3.2" class="outline-3">
+<h3 id="sec-3.2"><span class="section-number-3">3.2</span> 解説 </h3>
+<div class="outline-text-3" id="text-3.2">
+
+<p>このプラグインは、タイムラインをひとつ作って、フォロイーが mikutter に
+ついて何か言及したら、そのツイートをそのタイムラインにも表示します。
+これだけだと、現在 mikutter に標準で入っている extract plugin と同じで
+すが、このプラグインはその人のツイートを、マッチしたツイートから5分間
+の間は、無条件にタイムラインに入れます。
+</p>
+<p>
+最初に mikutter の名前を出して、あとでツイートを小分けにして mikutter
+について言及しているかもしれないからです。そんなことないかもしれませんが、こんな変なフィルタも書けるんだよというデモなので勘弁して下さい。
+</p>
+
+</div>
+
+<div id="outline-container-3.2.1" class="outline-4">
+<h4 id="sec-3.2.1"><span class="section-number-4">3.2.1</span> イベントの待受 </h4>
+<div class="outline-text-4" id="text-3.2.1">
+
+<p>ユーザやTwitterから何かしらの入力があれば、mikutter内ではイベントが発
+生します。ほとんどのプラグインは、このイベントを受け取って何かを実行す
+ることで、目的を達成します。
+Plugin.create のブロック内に、以下のように書けば、イベント <b>event</b> が
+発生したときに <b>処理</b> が実行されます。その際、引数は <b>params</b> にセット
+されます。
+</p>
+
+
+
+<pre class="example">onevent do |params|
+  # 処理
+end
+</pre>
+
+
+
+
+<p>
+<b>onevent</b> は、 <b>on_event</b> と書いても <b>event</b> を待ち受けます。イベ
+ント名が長いなど、つなげて書くと読みづらい場合は、間にアンダーバー
+を入れるパターンを使ってもいいかもしれません。
+引数は、イベントによって異なります。 mikutter プラグインの開発にとって
+イベントはとても重要なものですが、数が多いので、このあと出てくるぶんに
+ついても逐一解説はしません。各イベントについて知りたい場合は、RDocの
+イベント・フィルタリファレンス <a href="http://mikutter.hachune.net/rdoc/Plugin.html">http://mikutter.hachune.net/rdoc/Plugin.html</a> を参照してください。ただし、これが
+mikutterのすべてのイベントを網羅しているわけではありません。プラグ
+インが新しい種類のイベントを定義することができるからです。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3.2.2" class="outline-4">
+<h4 id="sec-3.2.2"><span class="section-number-4">3.2.2</span> タイムライン </h4>
+<div class="outline-text-4" id="text-3.2.2">
+
+<p>タイムラインをタブに登録するには、タイムラインウィジェットを作成し、
+それをGUIプラグインに渡してやる必要があります。
+</p>
+<ul>
+<li id="sec-3.2.2.1">タイムラインウィジェット <br/>
+タイムラインウィジェットを作成するのは簡単です。以下のように書き
+ます。
+
+
+
+
+<pre class="example">timeline = Gtk::TimeLine.new
+</pre>
+
+
+
+
+<p>
+これで、表示するタイムラインの準備が出来ました。
+</p>
+</li>
+<li id="sec-3.2.2.2">イベントを発生させる <br/>
+タイムラインウィジェットは、確保したあとGUIプラグインに送らないと
+表示されません。GUIプラグインにウィジェットを送るためには、
+<b>mui_tab_regist</b> イベントを発生させてやる必要があります。
+
+<p>
+GUIプラグインは、 <b>mui_tab_regist</b> イベントを監視していて、イベン
+トが発生したら引数のタイムラインウィジェットをペインに追加するよ
+うになっています。
+</p>
+
+
+
+<pre class="example">timeline = Gtk::TimeLine.new
+Plugin.call(:mui_tab_regist, timeline, 'Title', MUI::Skin.get("timeline.png"))
+</pre>
+
+
+
+
+<p>
+Plugin.call() は、イベントを発生させるためのメソッドです。第一引
+数のイベントを発生させ、第二引数以降は、イベントの引数です。この
+メソッドは即座に返ってきて、実際のイベントの起動は、あとで処理の
+手が空いたときに行われます。
+</p>
+<p>
+今回の範囲からは逸脱しますが、イベントを発生させる時、待ち受けるブ
+ロックを登録するときには、そのイベントが存在するかどうかは確認しま
+せん。つまり、プラグインが好きにイベントを作成することができる、と
+いうことです。この仕組を用いて、あなたの作成したプラグイン同士がイ
+ベントを使って通信することができますし、本来は別のプラグイン同士が
+通信する内容を受け取ることも出来ます。今回の <b>mui_tab_regist</b> は、
+GUIプラグインが独自に提供しているイベントです。
+</p>
+<ul>
+<li id="sec-3.2.2.2.1">タブのアイコン <br/>
+例の中で使っている MUI::Skin.get() について、一応解説しておきま
+す。
+
+<p>
+これは、タイムラインのアイコンのパスを返します。省略可能ですが、
+このように指定しておけば、ホームタイムラインと同じアイコンが表示
+されます。スキン機能が実装されたら、現在のスキンでのアイコンの絶
+対パスを返すようになりますが、現在は実装されていないので、デフォ
+ルトスキンの絶対パスを返しています。
+</p>
+</li>
+</ul>
+</li>
+<li id="sec-3.2.2.3">タイムラインにツイートを追加する <br/>
+作成したタイムラインを表示することは出来ました。次に、ツイートを
+タイムラインに追加する方法です。これは簡単です。
+
+
+
+
+<pre class="example">timeline.add(Message...)
+</pre>
+
+
+
+
+<p>
+Gtk::TimeLineのインスタンスにMessageのインスタンスか、それが入っ
+た配列を渡せば追加されます。
+</p>
+<p>
+Messageについては、結構複雑なので後述します。今回の例では、 
+Message#user を使って、ツイートしたユーザを取得しているのと、
+Message#[] の <b>:created</b> (投稿日時)を取得しています。
+</p>
+<p>
+この情報を元に、mikutterの言及があれば今後5分間だけツイートを抽出
+するフィルタを実現できるわけです。
+少し実装を変えれば、他のツイッタークライアントではできないような
+複雑なフィルタを比較的簡単に実装することができるでしょう。
+</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> スマートなミュート機能 </h2>
+<div class="outline-text-2" id="text-4">
+
+<p>mikutter標準のミュート機能は、すべてのタイムラインからツイートを非表
+示にします。このセクションでは、イベントが発生する前にその内容を編集・
+削除するためのイベントフィルタ機能、またそれを単体で使って、プラグイ
+ン間通信を実現する方法について解説します。
+</p>
+
+</div>
+
+<div id="outline-container-4.1" class="outline-3">
+<h3 id="sec-4.1"><span class="section-number-3">4.1</span> コード例 </h3>
+<div class="outline-text-3" id="text-4.1">
+
+<p>今回は、特定の単語の入ったツイートを非表示にします。
+</p>
+
+
+<pre class="example"># -*- coding: utf-8 -*-
+
+Plugin.create(:mute_word) do
+
+  exclude_words = ["政治","原発"] # フィルタする単語
+
+  filter_show_filter do |msgs|
+    msgs = msgs.select{ |m| not exclude_words.any?{ |word| m.to_s.include?(word) } }  end
+    [msgs]
+  end
+
+end
+</pre>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4.2" class="outline-3">
+<h3 id="sec-4.2"><span class="section-number-3">4.2</span> 解説 </h3>
+<div class="outline-text-3" id="text-4.2">
+
+
+</div>
+
+<div id="outline-container-4.2.1" class="outline-4">
+<h4 id="sec-4.2.1"><span class="section-number-4">4.2.1</span> イベントフィルタ </h4>
+<div class="outline-text-4" id="text-4.2.1">
+
+<ul>
+<li id="sec-4.2.1.1">イベントの引数を編集する <br/>
+ツイートをプラグインに配送するためにイベントが使われることは前のセ
+クションで触れました。今回は、イベントの発生時にそれを捕まえて、引
+数を書き換えることができる「イベントフィルタ」を使用します。
+
+<p>
+フィルタは、Plugin.createのブロック内で以下のように宣言します。
+</p>
+
+
+
+<pre class="example">filter_update do |service, msgs|
+  msgs = msgs.select{ |m| not m.to_s.include?("政治") }
+  [service, msgs]
+end
+</pre>
+
+
+
+
+<p>
+イベントが発生すると、イベントと同じ名前のフィルタが登録されていな
+いか確認して、登録されていたら先にフィルタを実行し、その戻り値を新
+たに引数リストにします。なので、普通のイベントと同じように引数を受
+け取り、加工した結果を返すことで、イベントの引数を変更できます。
+</p>
+<p>
+この場合は、updateイベントで配送されるツイートをすべて確認して、
+「政治」「原発」というキーワードが含まれたツイートを削除します。
+三行目が戻り値ですが、ここに注目してください。引数を配列で返してい
+ます。こうやって、加工した値を返してやることで、実際にイベントが発
+生する時には、該当するツイートが除外されるようになるわけです。
+</p>
+<p>
+一つ注意しなければいけないのは、戻り値の配列は、必ず引数の数と一
+致しなければいけないということです。なぜなら、イベントの引数の数
+は、今のところ常に固定だからです。
+</p>
+</li>
+<li id="sec-4.2.1.2">イベントフィルタを使ったプラグイン間の通信 <br/>
+イベントを使えば、別のプラグインに情報を伝えることができるという
+のは前に紹介したとおりです。
+
+<p>
+しかし、イベントは受け取りたい方がイベントを待ち受けて、発信されるのを待つ必要があります。
+実際には受け取り側のリクエストに即座に答えるような通信をしたいことのほうが多いと思われますが、
+こういった用途にもイベントフィルタを使用します。
+</p>
+<p>
+まず、イベントフィルタは、イベントが発生していなくても、単独で呼び出すことができます。
+</p>
+<pre class="example">
+Plugin.filtering(:update, Post.primary_service, [Instance of Messages...])
+</pre>
+
+
+<p>
+この戻り値は、[Post, [Message&hellip;]]のような、イベントフィルタの戻
+り値そのままです。
+</p>
+<p>
+次に、イベントフィルタは、イベントが未定義でも作成できます。
+</p>
+
+
+
+<pre class="example">filter_plus do |num|
+  [num + 1]
+end
+</pre>
+
+
+
+
+<p>
+つまり、直接呼び出されることだけを想定したフィルタを勝手に定義し
+てしまえば、リクエスト-レスポンス型の通信が実現できるのです。
+</p>
+<ul>
+<li id="sec-4.2.1.2.1">mikutterから完全に排除するには <br/>
+実は、updateイベントのフィルタでは、ホームタイムラインから表示さ
+れなく成るだけで、他のタイムラインからはフィルタリングできていま
+せん。この実装のほうがいい場合もあるでしょうが、mikutter上にそも
+そも表示されないようにしたい場合もあると思います。
+
+<p>
+そのためには、タイムラインが表示前にフィルタを呼び出していれば、
+そこで削除することができますね。当然、mikutterはミュートを実現す
+るために、表示する寸前に以下のようなコードでフィルタを呼び出して
+います。
+</p>
+<pre class="example">
+Plugin.filtering(:show_filter, message)
+</pre>
+
+
+<p>
+つまり、前に書いたupdateフィルタは以下のように書き換えれば、すべ
+てのタイムラインに影響するようになります。
+</p>
+
+
+
+<pre class="example">filter_show_filter do |msgs|
+  msgs = msgs.select{ |m| not m.to_s.include?("政治") }
+  [msgs]
+end
+</pre>
+
+
+
+
+<p>
+show_filterは、notifyプラグインからも使用されていて、TLに表示さ
+れないツイートはポップアップ通知や効果音も鳴らさないようになって
+います。こんなふうに、他のプラグインが他の用途のためのフィルタを
+使用したり、コールバックを登録することもできます。イベントとフィ
+ルタをうまく使えば、プラグインそれ自身に拡張性を持たせることがで
+きます。
+</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> STOT形式でコピー </h2>
+<div class="outline-text-2" id="text-5">
+
+<p>STOT(ShareTwitterOnTumblr)は、ツイートをTumblrに投稿するためのフォー
+マットの一つです。様々なアプリケーションで使われていることもあり、こ
+の形式でツイートをコピーできると何かと便利です。
+このセクションでは、
+</p>
+<ul>
+<li>
+ユーザが選択して呼び出せる任意の機能(mikutterコマンド)の追加方法
+</li>
+<li>
+ツイートの情報(Message)とユーザ情報(User)のオブジェクトの取扱方
+
+</li>
+</ul>
+
+<p>について解説します。
+</p>
+
+</div>
+
+<div id="outline-container-5.1" class="outline-3">
+<h3 id="sec-5.1"><span class="section-number-3">5.1</span> コード例 </h3>
+<div class="outline-text-3" id="text-5.1">
+
+
+
+
+<pre class="example"># -*- coding: utf-8 -*-
+
+Plugin.create(:copy_as_stot) do
+
+  filter_command do |menu|
+    menu[:copy_as_stot] = {
+      :slug =&gt; :copy_as_stot,
+      :name =&gt; 'STOT形式でコピー',
+      :condition =&gt; lambda{ |opt|
+        true
+      },
+      :exec =&gt; lambda{ |opt|
+        message = opt.message
+        screen_name = message.user[:idname]
+        Gtk::Clipboard.copy("#{screen_name}: #{message.to_s} [http://twitter.com/#!/#{screen_name}/status/#{message.id}]")
+      },
+      :visible =&gt; true,
+      :role =&gt; :message }
+    [menu]
+  end
+
+end
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5.2" class="outline-3">
+<h3 id="sec-5.2"><span class="section-number-3">5.2</span> 解説 </h3>
+<div class="outline-text-3" id="text-5.2">
+
+
+</div>
+
+<div id="outline-container-5.2.1" class="outline-4">
+<h4 id="sec-5.2.1"><span class="section-number-4">5.2.1</span> STOTについて </h4>
+<div class="outline-text-4" id="text-5.2.1">
+
+<p>まずはじめに、STOTの一例を示します。
+</p>
+<pre class="example">
+toshi_a: 会社でふぁぼるのたのしい [http://twitter.com/#!/toshi_a/status/151947400691449856]
+</pre>
+
+
+<p>
+こんなふうに、ユーザのscreen_nameと本文、URL(ツイートのID)の３つの
+要素が含まれています。要は、この３つの要素だけ取得して、クリップボー
+ドに合成したテキストを送れば終わりです。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5.2.2" class="outline-4">
+<h4 id="sec-5.2.2"><span class="section-number-4">5.2.2</span> mikutterコマンド </h4>
+<div class="outline-text-4" id="text-5.2.2">
+
+<p>この機能の呼び出し方法ですが、
+</p>
+<ul>
+<li>
+ツイートを右クリックしたときに出るメニュー
+</li>
+<li>
+ツイートを選択した状態で設定されたショートカットキーを押したとき
+に実行される
+
+</li>
+</ul>
+
+<p>の2つ方法で呼び出せるようにします。mikutterを使っていれば気づくか
+と思いますが、右クリックメニューで選択できる項目はすべてショートカッ
+トキーに割り当てることができます。これは、どちらも登録された
+「mikutterコマンド」を参照しているからで、ここに一つ機能を追加する
+ようにしておけば、ユーザは右クリックメニューから使ったり、ショート
+カットキーに割り当てたり、好きに使うことができます。
+</p>
+<p>
+サンプルコードでいうと、menuという連想配列に入れる内容がポイントです。
+以下のキーを持ったハッシュを入れます。
+</p>
+<ol>
+<li>
+<b>slug</b>
+コマンドスラッグ。一意なコマンド名。Symbol。
+
+</li>
+<li>
+<b>name</b>
+表示名。コンテキストメニューに表示される内容。String。
+
+</li>
+<li>
+<b>description</b>
+この機能の説明など。省略可能。
+</li>
+<li>
+<b>icon</b>
+アイコンがあれば。今のところ使われない。Gdk::PixbufとかString(ファイル名)を指定しましょう。
+
+</li>
+<li>
+<b>condition</b>
+実行条件。これの値と===で引数（後述）が比較されます。引数にもよりますが、Proc、Regexp、Stringなどを指定できます。
+
+</li>
+<li>
+<b>exec</b>
+実行される本体。:conditionと同じ引数を受け取るが、:conditionがfalseになった場合はそもそもこれは呼ばれない。
+
+</li>
+<li>
+<b>visible</b>
+コンテキストメニューに表示するかどうかのフラグ。falseなら表示されない。
+これは例えば、「ひとつ上のつぶやきを選択」のように、右クリックメニューに表示する必要のないものに使う。
+
+</li>
+<li>
+<b>role</b>
+コマンドを実行できる環境。たとえば、つぶやきを右クリックすると、ここに:messageが指定されたもののうち、
+:conditionがtrueなものだけが実行又はコンテキストメニューに表示される。指定できるもののバリエーションは後述。
+
+</li>
+</ol>
+
+<p><b>:condition</b> や <b>:exec</b> の「引数」というのは、 <b>:role</b> に何を設定した
+かによって変わります。
+</p>
+<ol>
+<li>
+<b>message</b>
+つぶやきにフォーカスがあるとき。以下のような構造体を引数に呼び
+出されます。
+
+
+
+<pre class="example">Struct.new(
+  :event          # Gdk::Event or nil,
+  :message        # Message,
+  :timeline       # Gtk::TimeLine,
+  :miraclepainter # Gdk::MiraclePainter
+)
+</pre>
+
+
+
+
+</li>
+<li>
+<b>messages</b>
+<b>message</b> とほぼ同じだが、ツイートの複数選択に対応しています。
+ツイートの数だけ構造体を含んだ配列が引数として渡されます。
+
+</li>
+<li>
+<b>message_select</b>
+<b>message</b> の時で、なおかつテキストが選択されているとき。引数も同じ。
+
+</li>
+<li>
+<b>timeline</b>
+タイムラインで右クリックされたとき。基本的に <b>message</b> と同じタイミングだけど、引数はGtk::TimeLineしか受け取らないという点がちがう。
+
+</li>
+<li>
+<b>postbox</b>
+つぶやき入力欄。今のところ、ショートカットキーにしか対応していない。引数としてGtk::PostBoxを受け取ります。
+
+</li>
+</ol>
+
+<p>こういうふうに、わりと簡単にmikutterコマンドを新しく追加できます。
+mikutterコマンドの話については、mikutter開発日記のmikutterコマンド <a href="http://mikutter.blogspot.com/2011/05/mikutter.html">http://mikutter.blogspot.com/2011/05/mikutter.html</a> でも触れています。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5.2.3" class="outline-4">
+<h4 id="sec-5.2.3"><span class="section-number-4">5.2.3</span> Message </h4>
+<div class="outline-text-4" id="text-5.2.3">
+
+<p>次に、前のセクションでも出てきたMessageについて触れます。御存知の
+通りmikutter上で一つのツイートを表すオブジェクトです。
+Messageはプラグインから作ることはまずありません。現在のところ、
+一つのツイートにつき必ず一つだけMessageのインスタンスが生成される
+ことが保証されています。
+実はキャッシュ機能や他のツイートを探索する機能も持っているのですが、
+今回は圧倒的に使用頻度が高いと思われる、ツイートの内容を取得すると
+ころに焦点を絞って紹介します。
+</p>
+<ul>
+<li id="sec-5.2.3.1">用意されているキー <br/>
+
+<p>
+次のキーで、ツイートの情報の取得はできます。例えば、 <b>m</b> に
+Messageのインスタンスが格納されているとしたら、 <b>m[:id]</b> で、ツイー
+トのIDが取得できます。
+</p>
+<p>
+また、いくつかの情報はインスタンスメソッドでも取得できます。キーを
+指定する方法なら正直に今持っている値を返しますが、メソッドを呼んだ
+場合はできるだけ正確に値を返そうとします。
+</p>
+<p>
+例えば、 <b>m[:reply_to]</b> は、返信先のツイートが読み込まれていない場
+合はツイートIDを数字で返す可能性がありますが、
+<b>m.receive_message</b> は、そういう場合、データベースのキャッシュや、
+場合によってはTwitterサーバにAPIリクエストを発行して返します。
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col align="left" /><col align="left" /><col align="left" />
+</colgroup>
+<thead>
+<tr><th scope="col">キー</th><th scope="col">意味</th><th scope="col">他の方法</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>ツイートのID(数字)</td><td>m.to_i</td></tr>
+<tr><td>entity</td><td>エンティティ情報(後述)</td><td>m.links, m.entity</td></tr>
+<tr><td>message</td><td>ツイートの本文</td><td>m.body</td></tr>
+<tr><td>user</td><td>ツイートを投稿したユーザ(User)</td><td>m.to_user</td></tr>
+<tr><td>receiver</td><td>このツイートを宛てられたユーザ(User)</td><td>m.receiver</td></tr>
+<tr><td>replyto</td><td>このツイートの返信先のMessage</td><td>m.receive_message</td></tr>
+<tr><td>retweet</td><td>これがリツイートなら元のMessage</td><td></td></tr>
+<tr><td>source</td><td>投稿したクライアント情報</td><td></td></tr>
+<tr><td>geo</td><td>ジオタグ</td><td></td></tr>
+<tr><td>created</td><td>投稿時刻</td><td></td></tr>
+<tr><td>modified</td><td>更新時刻</td><td></td></tr>
+</tbody>
+</table>
+
+
+<p>
+詳しいメソッドの一覧は、<a href="http://mikutter.hachune.net/rdoc/Message.html">RDocのMessageの項</a>を参照してください。
+</p>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-5.2.4" class="outline-4">
+<h4 id="sec-5.2.4"><span class="section-number-4">5.2.4</span> User </h4>
+<div class="outline-text-4" id="text-5.2.4">
+
+<p>UserクラスとMessageクラスはともにRetrieverのサブクラスで、機能はほ
+とんど同じです。ただし、当然持っている情報のキーに違いがあります。
+</p>
+<ul>
+<li id="sec-5.2.4.1">用意されているキー <br/>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col align="left" /><col align="left" /><col align="left" />
+</colgroup>
+<thead>
+<tr><th scope="col">キー</th><th scope="col">意味</th><th scope="col">他の方法</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>ユーザのID(数字)</td><td>u.to_i</td></tr>
+<tr><td>idname</td><td>スクリーンネーム</td><td>u.idname, u.to_s</td></tr>
+<tr><td>name</td><td>名前</td><td></td></tr>
+<tr><td>location</td><td>(プロフィールの)現在地</td><td></td></tr>
+<tr><td>detail</td><td>プロフィール本文(bio)</td><td></td></tr>
+<tr><td>profile_image_url</td><td>アイコン画像のURL</td><td></td></tr>
+<tr><td>url</td><td>Webページ（プロフィールで設定された）</td><td></td></tr>
+<tr><td>protected</td><td>非公開ユーザ(鍵垢)なら真</td><td></td></tr>
+<tr><td>followers_count</td><td>フォロワーの数</td><td></td></tr>
+<tr><td>statuses_count</td><td>ツイート数</td><td></td></tr>
+<tr><td>friends_count</td><td>フォロイー(フォローしている人)の数</td><td></td></tr>
+</tbody>
+</table>
+
+
+<p>
+専用メソッドはほとんど用意されていませんが、例えばこのユーザが「自分」
+かどうかを判定する <b>is_me?</b> のような便利なメソッドがいくつかあり
+ます。詳細は、<a href="http://mikutter.hachune.net/rdoc/User.html">RDocのUserの項</a>を参照してください。
+</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> あとがき </h2>
+<div class="outline-text-2" id="text-6">
+
+<p>mikutterは、ほとんどすべての機能がプラグインで実装されていることからも分かる通り、プラグインで柔軟に機能が追加できるようになっています。
+今回は、４つの例をとおして、簡単なプラグインを実装する方法を紹介しました。これらを組み合わせれば、ある程度いろんなプラグインを作成できるでしょう。
+</p>
+<p>
+今まで書いてきた内容も、現在では古くなっている可能性があります。日々進化しつづけるmikutterですが、時にはどうしても後方互換性が取れないような
+変更をしなければいけない時もあるからです。また、今まで冗長だった書き方も、スマートな方法が提供される場合もあります。
+最後に、最新の情報へのポインタを幾つか示しておきます。
+</p>
+<p>
+RDoc <a href="http://mikutter.hachune.net/rdoc/index.html">http://mikutter.hachune.net/rdoc/index.html</a> を見れば、trunkで、どういったクラスやメソッドが使用できるか確認することができます。
+完璧ではありませんが、主要なものや最近書かれたものについては、ドキュメントが存在します。
+</p>
+<p>
+Redmine <a href="http://dev.mikutter.hachune.net/">http://dev.mikutter.hachune.net/</a> を参照すれば、最近どんな変更が加わったのかを知ることができます。
+</p>
+<p>
+mikutter開発日記 <a href="http://mikutter.blogspot.com/">http://mikutter.blogspot.com/</a> は、ある程度まとまった情報を取得するのに便利です。
+</p>
+<p>
+最後に、「Writing mikutter plugin」の最新版は、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> に公開されています。
+最新バージョンに対応していますし、冒頭にも書いたとおり、サンプルコードを取得することも出来ます。
+</p></div>
+</div>
+<div id="postamble">
+<p class="author"> Author: @toshi_a
+<a href="mailto:toshi.alternative@gmail.com">&lt;toshi.alternative@gmail.com&gt;</a>
+</p>
+<p class="date"> Date: </p>
+<p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
+</div>
+</div>
+</body>
+</html>
