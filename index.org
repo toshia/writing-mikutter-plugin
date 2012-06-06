@@ -40,7 +40,7 @@
 Plugin.create :yoruho do
   def main
     Reserver.new(nextyrhtime){
-      say_yoruho(Post.primary_service)
+      say_yoruho(Service.primary)
       sleep 1
       main } end
 
@@ -76,25 +76,25 @@ end
     と next_yrh_time と say_yoruho を定義していますね。
 
 *** 文字列を投稿する
-**** Postオブジェクト
-     自動投稿を実現するためには、Postクラスのインスタンスを得ます。
-     Postクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
+**** Serviceオブジェクト
+     自動投稿を実現するためには、Serviceクラスのインスタンスを得ます。
+     Serviceクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
      ントの数だけインスタンスがあります。なので、プラグインがこのクラス
      をnewすることはありません。
 
      これを書いている現在では、mikutterは１つのアカウントでしかサインアッ
-     プできないということになっているので、以下のように書けば、Postクラ
+     プできないということになっているので、以下のように書けば、Serviceクラ
      スを得ることができると覚えておいてください。
 
-     : Post.primary_service
+     : Service.primary
 
      mikutterはそのうち複垢対応しますが、そうなったらこのメソッドは、現
-     在アクティブな(選択されている)アカウントのPostを返します。
+     在アクティブな(選択されている)アカウントのServiceを返します。
 
 **** update
-     Post#update で、ツイートが投稿されます。
+     Service#update で、ツイートが投稿されます。
 
-     : Post.primary_service.update(:message => "ツイートの本文")
+     : Service.primary.update(:message => "ツイートの本文")
 
      ツイートの投稿は非同期で行われるので、処理がここで止まるというこ
      とはありません。
@@ -258,7 +258,7 @@ end
      timeline.add(Message...)
 #+END_SRC
 
-     Gtk::TimeLineのインスタンスにMessageのインスタンスか、それが入っ
+     Gtk::TimeLine#add にMessageのインスタンスか、それが入っ
      た配列を渡せば追加されます。
 
      Messageについては、結構複雑なので後述します。今回の例では、 

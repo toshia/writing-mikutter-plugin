@@ -205,7 +205,7 @@ $ mkdir ~/.mikutter/plugin
 Plugin.create :yoruho do
   def main
     Reserver.new(nextyrhtime){
-      say_yoruho(Post.primary_service)
+      say_yoruho(Service.primary)
       sleep 1
       main } end
 
@@ -269,32 +269,32 @@ Plugin.create は、プラグインをコアに登録します。また、ブロ
 <div class="outline-text-4" id="text-2.2.2">
 
 <ul>
-<li id="sec-2.2.2.1">Postオブジェクト <br/>
-自動投稿を実現するためには、Postクラスのインスタンスを得ます。
-Postクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
+<li id="sec-2.2.2.1">Serviceオブジェクト <br/>
+自動投稿を実現するためには、Serviceクラスのインスタンスを得ます。
+Serviceクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
 ントの数だけインスタンスがあります。なので、プラグインがこのクラス
 をnewすることはありません。
 
 <p>
 これを書いている現在では、mikutterは１つのアカウントでしかサインアッ
-プできないということになっているので、以下のように書けば、Postクラ
+プできないということになっているので、以下のように書けば、Serviceクラ
 スを得ることができると覚えておいてください。
 </p>
 <pre class="example">
-Post.primary_service
+Service.primary
 </pre>
 
 
 <p>
 mikutterはそのうち複垢対応しますが、そうなったらこのメソッドは、現
-在アクティブな(選択されている)アカウントのPostを返します。
+在アクティブな(選択されている)アカウントのServiceを返します。
 </p>
 </li>
 <li id="sec-2.2.2.2">update <br/>
-Post#update で、ツイートが投稿されます。
+Service#update で、ツイートが投稿されます。
 
 <pre class="example">
-Post.primary_service.update(:message =&gt; "ツイートの本文")
+Service.primary.update(:message =&gt; "ツイートの本文")
 </pre>
 
 
@@ -557,7 +557,7 @@ GUIプラグインが独自に提供しているイベントです。
 
 
 <p>
-Gtk::TimeLineのインスタンスにMessageのインスタンスか、それが入っ
+Gtk::TimeLine#add にMessageのインスタンスか、それが入っ
 た配列を渡せば追加されます。
 </p>
 <p>
