@@ -1,0 +1,111 @@
+#text-table-of-contents {
+	position:fixed;
+	top: 0;
+	left: 0;
+	width: 200px;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+#table-of-contents h2 {
+	display: none;
+}
+
+#text-table-of-contents > ul > li {
+	display: block;
+	border-radius: 6px;
+	margin: 8px 4px 8px 4px;
+	padding: 4px;
+	line-height: 1.2em;
+}
+
+#text-table-of-contents > ul > li:nth-child(1) {
+	background-color: #fee;
+}
+
+#text-table-of-contents > ul > li:nth-child(2) {
+	background-color: #efe;
+}
+
+#text-table-of-contents > ul > li:nth-child(3) {
+	background-color: #eef;
+}
+
+#text-table-of-contents > ul > li:nth-child(4) {
+	background-color: #ffe;
+}
+
+#text-table-of-contents > ul > li:nth-child(5) {
+	background-color: #fef;
+}
+
+#text-table-of-contents > ul > li:nth-child(6) {
+	background-color: #eff;
+}
+
+#text-table-of-contents > ul > li > a{
+	font-weight: bold;
+}
+
+#text-table-of-contents > ul > li > ul > li{
+	padding-top: 4px;
+}
+
+#text-table-of-contents ul {
+	padding-left: 0;
+	justify-content: flex-start;
+}
+
+#content > div, #postamble {
+	margin-left: 200px;
+}
+
+.outline-2 {
+	border-bottom: 3px double #000;
+}
+
+.outline-3 {
+	border-top: 1px solid #000;
+}
+
+.section-number-4 {
+	display: none;
+}
+
+.outline-4 h4 {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+dl {
+	display: inline-block;
+	border: solid 2px #000;
+	margin: 4px;
+	border-radius: 4px;
+	padding: 2px 4px;
+}
+
+dt {
+	display: block;
+	float: left;
+	min-width: 12em;
+	padding: 2px;
+}
+
+dd {
+	display: block;
+	padding: 2px;
+	text-indent: 1em;
+	margin: 0;
+	border-bottom: dotted 2px #000;
+}
+
+dd:last-child {
+	border-bottom: none 0px #000;
+}
+
+dd dl {
+	display: block;
+	margin-left: 14em;
+}
