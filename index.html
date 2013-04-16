@@ -929,7 +929,7 @@ Plugin.filtering(:show_filter, message)
     <span style="color: #cd0000;">name</span>: <span style="color: #008b00;">'STOT&#24418;&#24335;&#12391;&#12467;&#12500;&#12540;'</span>,
     <span style="color: #cd0000;">condition</span>: <span style="color: #0000ff; font-weight: bold;">Plugin</span>::<span style="color: #0000ff; font-weight: bold;">Command</span>[<span style="color: #cd0000;">:HasOneMessage</span>],
     <span style="color: #cd0000;">visible</span>: <span style="color: #000000;">true</span>,
-    <span style="color: #cd0000;">role</span>: <span style="color: #cd0000;">:timeline</span>) <span style="color: #4682b4; font-weight: bold;">do</span>
+    <span style="color: #cd0000;">role</span>: <span style="color: #cd0000;">:timeline</span>) <span style="color: #4682b4; font-weight: bold;">do</span> |opt|
       message = opt.messages.first
       screen_name = message.user[<span style="color: #cd0000;">:idname</span>]
       <span style="color: #0000ff; font-weight: bold;">Gtk</span>::<span style="color: #0000ff; font-weight: bold;">Clipboard</span>.copy(<span style="color: #000000;">"#{screen_name}</span><span style="color: #008b00;">:</span><span style="color: #000000;"> #{message.to_s}</span><span style="color: #008b00;"> [https://twitter.com</span><span style="color: #000000;">/#{screen_name}</span><span style="color: #008b00;">/status</span><span style="color: #000000;">/#{message.id}</span><span style="color: #008b00;">]"</span>)
