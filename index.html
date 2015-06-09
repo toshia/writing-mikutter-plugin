@@ -1,63 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Writing mikutter plugin</title>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="title" content="Writing mikutter plugin"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="generated" content=""/>
-<meta name="author" content="@toshi_a"/>
-<meta name="description" content=""/>
-<meta name="keywords" content=""/>
+<!-- 2015-06-10 水 01:48 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="@toshi_aa" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
-  html { font-family: Times, serif; font-size: 12pt; }
   .title  { text-align: center; }
-  .todo   { color: red; }
+  .todo   { font-family: monospace; color: red; }
   .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
-  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
-  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
-  .center {margin-left:auto; margin-right:auto; text-align:center;}
-  p.verse { margin-left: 3% }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
   pre {
-	border: 1pt solid #AEBDCC;
-	background-color: #F3F5F7;
-	padding: 5pt;
-	font-family: courier, monospace;
-        font-size: 90%;
-        overflow:auto;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
   }
-  table { border-collapse: collapse; }
-  td, th { vertical-align: top;  }
-  th.right  { text-align:center;  }
-  th.left   { text-align:center;   }
-  th.center { text-align:center; }
-  td.right  { text-align:right;  }
-  td.left   { text-align:left;   }
-  td.center { text-align:center; }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
   dt { font-weight: bold; }
-  div.figure { padding: 0.5em; }
-  div.figure p { text-align: center; }
-  div.inlinetask {
-    padding:10px;
-    border:2px solid gray;
-    margin:10px;
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
     background: #ffffcc;
   }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
   textarea { overflow-x: auto; }
-  .linenr { font-size:smaller }
-  .code-highlighted {background-color:#ffff00;}
-  .org-info-js_info-navigation { border-style:none; }
-  #org-info-js_console-label { font-size:10px; font-weight:bold;
-                               white-space:nowrap; }
-  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
-                                 font-weight:bold; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
   /*]]>*/-->
 </style>
 <script type="text/javascript">
@@ -106,1250 +134,1210 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
-
 </head>
 <body>
-
-<div id="preamble">
-
-</div>
-
 <div id="content">
 <h1 class="title">Writing mikutter plugin</h1>
-
-
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-    <li><a href="#sec-1">1 はじめに</a>
-<di
+<li><a href="#sec-1">1. はじめに</a>
 <ul>
-  <li><a href="#sec-1-1">1.1 想定する読者</a>v id="</li>
-<li><a href="#sec-1-2">1.2 プラグインの動かし方</a>outline-co</li>
-<li><a href="#sec-1-3">1.3 プラグインの作成支援機能</a>ntainer-1" c
+<li><a href="#sec-1-1">1.1. 想定する読者</a></li>
+<li><a href="#sec-1-2">1.2. プラグインの動かし方</a></li>
+<li><a href="#sec-1-3">1.3. プラグインの作成支援機能</a>
 <ul>
-  <li><a href="#sec-1-3-1">1.3.1 雛形の作成(generate)</a>lass=</li>
-<li><a href="#sec-1-3-2">1.3.2 定義ファイルの作成(spec)</a>"outline-</li>
+<li><a href="#sec-1-3-1">1.3.1. 雛形の作成(generate)</a></li>
+<li><a href="#sec-1-3-2">1.3.2. 定義ファイルの作成(spec)</a></li>
 </ul>
 </li>
-<li><a href="#sec-1-4">1.4 準備はできた？</a>2">
-<h2</li>
+<li><a href="#sec-1-4">1.4. 準備はできた？</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2 特定の時間にツイートする</a> id="sec-1">
+<li><a href="#sec-2">2. 特定の時間にツイートする</a>
 <ul>
-  <li><a href="#sec-2-1">2.1 コード</a><sp</li>
-  <li><a href="#sec-2-2">2.2 解説</a>an
+<li><a href="#sec-2-1">2.1. コード</a></li>
+<li><a href="#sec-2-2">2.2. 解説</a>
 <ul>
-  <li><a href="#sec-2-2-1">2.2.1 メソッドの定義</a> class=</li>
-<li><a href="#sec-2-2-2">2.2.2 文字列を投稿する</a>"section</li>
-<li><a href="#sec-2-2-3">2.2.3 Reserver 予約実行</a>-num</li>
+<li><a href="#sec-2-2-1">2.2.1. メソッドの定義</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 文字列を投稿する</a></li>
+<li><a href="#sec-2-2-3">2.2.3. Reserver 予約実行</a></li>
 </ul>
 </li>
-<li><a href="#sec-2-3">2.3 まとめ</a>ber</li>
+<li><a href="#sec-2-3">2.3. まとめ</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 特殊なタイムライン</a>-2">1</sp
+<li><a href="#sec-3">3. 特殊なタイムライン</a>
 <ul>
-  <li><a href="#sec-3-1">3.1 コード</a>an></li>
-<li><a href="#sec-3-2">3.2 解説</a> は
+<li><a href="#sec-3-1">3.1. コード</a></li>
+<li><a href="#sec-3-2">3.2. 解説</a>
 <ul>
-  <li><a href="#sec-3-2-1">3.2.1 イベントの待受</a>じめに</h2</li>
-  <li><a href="#sec-3-2-2">3.2.2 タブとタイムライン</a>>
-<div cl</li>
+<li><a href="#sec-3-2-1">3.2.1. イベントの待受</a></li>
+<li><a href="#sec-3-2-2">3.2.2. タブとタイムライン</a></li>
 </ul>
 </li>
-<li><a href="#sec-3-3">3.3 まとめ</a>ass</li>
+<li><a href="#sec-3-3">3.3. まとめ</a></li>
 </ul>
 </li>
-<li><a href="#sec-4">4 キーワードミュート機能</a>="outline-t
+<li><a href="#sec-4">4. キーワードミュート機能</a>
 <ul>
-  <li><a href="#sec-4-1">4.1 コード</a>ext</li>
-<li><a href="#sec-4-2">4.2 解説</a>-2
+<li><a href="#sec-4-1">4.1. コード</a></li>
+<li><a href="#sec-4-2">4.2. 解説</a>
 <ul>
-  <li><a href="#sec-4-2-1">4.2.1 イベントフィルタ</a>" id="te</li>
+<li><a href="#sec-4-2-1">4.2.1. イベントフィルタ</a></li>
 </ul>
 </li>
-<li><a href="#sec-4-3">4.3 まとめ</a>xt-</li>
+<li><a href="#sec-4-3">4.3. まとめ</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">5 STOT形式でコピー</a>1">
+<li><a href="#sec-5">5. STOT形式でコピー</a>
+<ul>
+<li><a href="#sec-5-1">5.1. コード</a></li>
+<li><a href="#sec-5-2">5.2. 解説</a>
+<ul>
+<li><a href="#sec-5-2-1">5.2.1. STOTについて</a></li>
+<li><a href="#sec-5-2-2">5.2.2. mikutterコマンド</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-6">6. システムメッセージの利用</a>
+<ul>
+<li><a href="#sec-6-1">6.1. コード</a></li>
+<li><a href="#sec-6-2">6.2. 解説</a>
+<ul>
+<li><a href="#sec-6-2-1">6.2.1. アクティビティとは</a></li>
+<li><a href="#sec-6-2-2">6.2.2. 通知の種類</a></li>
+<li><a href="#sec-6-2-3">6.2.3. 実際に通知を発生させる</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-7">7. 終わりに</a>
+<ul>
+<li><a href="#sec-7-1">7.1. プラグインを公開する</a></li>
+<li><a href="#sec-7-2">7.2. 他のドキュメント</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8. 付録</a></li>
+</ul>
+</div>
+</div>
 
-<
-<ul>
-  <li><a href="#sec-5-1">5.1 コード</a>p> </li>
-<li><a href="#sec-5-2">5.2 解説</a> R
-<ul>
-  <li><a href="#sec-5-2-1">5.2.1 STOTについて</a>ubyで</li>
-<li><a href="#sec-5-2-2">5.2.2 mikutterコマンド</a>miku</li>
-</ul></li>
-</ul>
-</li>
-<li><a href="#sec-6">6 システムメッセージの利用</a>tterを拡張する方法に
-<ul>
-  <li><a href="#sec-6-1">6.1 コード</a>ついて</li>
-<li><a href="#sec-6-2">6.2 解説</a>です
-<ul>
-  <li><a href="#sec-6-2-1">6.2.1 アクティビティとは</a>。
-</p>
-<p</li>
-  <li><a href="#sec-6-2-2">6.2.2 通知の種類</a>>
-  m</li>
-  <li><a href="#sec-6-2-3">6.2.3 実際に通知を発生させる</a>ikutterはサード</li>
-</ul></li>
-</ul>
-</li>
-<li><a href="#sec-7">7 終わりに</a>パーティ
-<ul>
-  <li><a href="#sec-7-1">7.1 プラグインを公開する</a>の「プラグイン」を追</li>
-<li><a href="#sec-7-2">7.2 他のドキュメント</a>加して、あとから</li>
-</ul>
-</li>
-<li><a href="#sec-8">8 付録</a>機能</li>
-</ul>
-</div>
-</div>
-を追加することができます。
-</p>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> はじめに</h2>
+<div class="outline-text-2" id="text-1">
 <p>
-  本文章では、いくつかの事例を取り上げて、プラグインを作るための大まかな方法を説明します。
-</p>
-<p>
-  サンプルコードは、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> にこのドキュメントの最新版があるので、そこから取得してください。
+Rubyでmikutterを拡張する方法についてです。
 </p>
 
+<p>
+mikutterはサードパーティの「プラグイン」を追加して、あとから機能を追加することができます。
+</p>
+
+<p>
+本文章では、いくつかの事例を取り上げて、プラグインを作るための大まかな方法を説明します。
+</p>
+
+<p>
+サンプルコードは、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> にこのドキュメントの最新版があるので、そこから取得してください。
+</p>
 </div>
 
-<div id="outline-container-1-1" class="outline-3">
+<div id="outline-container-sec-1-1" class="outline-3">
 <h3 id="sec-1-1"><span class="section-number-3">1.1</span> 想定する読者</h3>
 <div class="outline-text-3" id="text-1-1">
-
-<p>   一応、これを読むような人は大抵プログラミングの経験があると思いますが、何らかの言語を理解している人なら、Rubyを勉強しながら簡単にプラグインを書くことができると思います。
-   基本的なプログラミングの概念については説明していません。世の中にはRubyでプログラミングを学ぶことができる文献がいくつもありますので、プログラミング自体の話はそういうのをどうぞ。
+<p>
+一応、これを読むような人は大抵プログラミングの経験があると思いますが、何らかの言語を理解している人なら、Rubyを勉強しながら簡単にプラグインを書くことができると思います。
+基本的なプログラミングの概念については説明していません。世の中にはRubyでプログラミングを学ぶことができる文献がいくつもありますので、プログラミング自体の話はそういうのをどうぞ。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-1-2" class="outline-3">
+<div id="outline-container-sec-1-2" class="outline-3">
 <h3 id="sec-1-2"><span class="section-number-3">1.2</span> プラグインの動かし方</h3>
 <div class="outline-text-3" id="text-1-2">
-
-<p>   mikutterのプラグインをインストールするには、 ~/.mikutter/plugin の直下に拡張子 <b>.rb</b> で終わるファイルを置くか、
-   プラグイン名のディレクトリを作成し、その中に <b>プラグイン名.rb</b> という名前のファイルを設置する方法があります。
-   後者の方法を使うと、gitなどでプラグインごとにバージョン管理が容易になりますし、プラグイン自体を複数のファイルに分割することができます。
+<p>
+mikutterのプラグインをインストールするには、 ~/.mikutter/plugin の直下に拡張子 <b>.rb</b> で終わるファイルを置くか、
+プラグイン名のディレクトリを作成し、その中に <b>プラグイン名.rb</b> という名前のファイルを設置する方法があります。
+後者の方法を使うと、gitなどでプラグインごとにバージョン管理が容易になりますし、プラグイン自体を複数のファイルに分割することができます。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-1-3" class="outline-3">
+<div id="outline-container-sec-1-3" class="outline-3">
 <h3 id="sec-1-3"><span class="section-number-3">1.3</span> プラグインの作成支援機能</h3>
 <div class="outline-text-3" id="text-1-3">
-
-<p>   mikutterにはプラグインの作成を支援する機能があります。mikutter.rbにはいくつかのコマンドラインオプションがあります。
+<p>
+mikutterにはプラグインの作成を支援する機能があります。mikutter.rbにはいくつかのコマンドラインオプションがあります。
 </p>
+
 <pre class="example">
 $ mikutter.rb --help
 command are:
     generate [plugin_slug]       generate plugin template at ~/.mikutter/plugin/
     spec [directory]             generate plugin spec. ex) mikutter spec ~/.mikutter/plugin/test
 </pre>
-
-
-
 </div>
 
-<div id="outline-container-1-3-1" class="outline-4">
+<div id="outline-container-sec-1-3-1" class="outline-4">
 <h4 id="sec-1-3-1"><span class="section-number-4">1.3.1</span> 雛形の作成(generate)</h4>
 <div class="outline-text-4" id="text-1-3-1">
-
-<p>    プラグインを新しく作成するときに、以下の様なコマンドを実行すれば必要なディレクトリを作成し、ひな形ファイルを作成します。
+<p>
+プラグインを新しく作成するときに、以下の様なコマンドを実行すれば必要なディレクトリを作成し、ひな形ファイルを作成します。
 </p>
+
 <pre class="example">
 $ mikutter.rb generate test_plugin
 </pre>
 
-
 <p>
-    これで、 ~/.mikutter/plugin/test_plugin/ ディレクトリが作成され、その中に test_plugin.rb というファイルが作成されます。また、このファイルには最低限のプラグインのテンプレートが書かれています。
+これで、 ~/.mikutter/plugin/test_plugin/ ディレクトリが作成され、その中に test_plugin.rb というファイルが作成されます。また、このファイルには最低限のプラグインのテンプレートが書かれています。
 </p>
 
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:test_plugin</span>) <span style="color: #a1db00;">do</span>
 
-<span style="color: #1f5bff;">Plugin</span>.create(<span style="color: #1f5bff;">:test_plugin</span>) <span style="color: #00af00;">do</span>
-
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
-
+</div>
+</div>
 </div>
 
-</div>
-
-<div id="outline-container-1-3-2" class="outline-4">
+<div id="outline-container-sec-1-3-2" class="outline-4">
 <h4 id="sec-1-3-2"><span class="section-number-4">1.3.2</span> 定義ファイルの作成(spec)</h4>
 <div class="outline-text-4" id="text-1-3-2">
-
-<p>    mikutter 0.2からはプラグインに定義ファイルを持たせることが推奨されています。定義ファイルは、プラグインの説明、バージョン、作者、依存関係などの情報を含むファイルで、なければ不適切な環境でプラグインがロードされ、クラッシュするおそれがあります。書式を長々と説明するよりも、これも自動的に生成させることができます。
+<p>
+mikutter 0.2からはプラグインに定義ファイルを持たせることが推奨されています。定義ファイルは、プラグインの説明、バージョン、作者、依存関係などの情報を含むファイルで、なければ不適切な環境でプラグインがロードされ、クラッシュするおそれがあります。書式を長々と説明するよりも、これも自動的に生成させることができます。
 </p>
+
 <pre class="example">
 $ mikutter.rb spec ~/.mikutter/plugin/test_plugin/
 </pre>
 
-
 <p>
-    引数には、プラグインのスラッグではなく、ディレクトリパスを与えることに注意してください。これを実行すると、対話的に２，３質問されるので、適当に答えましょう。すると、 ~/.mikutter/plugin/test_plugin/.mikutter.yml というspecファイルが生成されるはずです。
-    test_pluginは何も内容がないので、specファイルも見所がありません。みっくストア(<a href="https://github.com/toshia/mikustore">https://github.com/toshia/mikustore</a>)のspecファイルがこの方法で生成されているので、ちょっと見てみましょう。
+引数には、プラグインのスラッグではなく、ディレクトリパスを与えることに注意してください。これを実行すると、対話的に２，３質問されるので、適当に答えましょう。すると、 ~/.mikutter/plugin/test_plugin/.mikutter.yml というspecファイルが生成されるはずです。
+test_pluginは何も内容がないので、specファイルも見所がありません。みっくストア(<a href="https://github.com/toshia/mikustore">https://github.com/toshia/mikustore</a>)のspecファイルがこの方法で生成されているので、ちょっと見てみましょう。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-yaml"><span style="color: #b2b2b2; font-style: italic;">---</span>
+<pre class="src src-yaml"><span style="color: #6c6c6c; font-style: italic;">---</span>
 <span style="color: #ff8700;">slug</span>: :mikustore
 <span style="color: #ff8700;">depends</span>:
   <span style="color: #ff8700;">mikutter</span>: 0.2.0.1051
   <span style="color: #ff8700;">plugin</span>:
   - settings
-<span style="color: #ff8700;">version</span>: <span style="color: #ff1f8b;">'0.1'</span>
+<span style="color: #ff8700;">version</span>: <span style="color: #ff4ea3;">'0.1'</span>
 <span style="color: #ff8700;">author</span>: toshi_a
 <span style="color: #ff8700;">name</span>: &#12415;&#12387;&#12367;&#12473;&#12488;&#12450;
 <span style="color: #ff8700;">description</span>: mikutter&#12395;&#12503;&#12521;&#12464;&#12452;&#12531;&#12398;&#12497;&#12483;&#12465;&#12540;&#12472;&#31649;&#29702;&#27231;&#33021;&#12434;&#36861;&#21152;&#12375;&#12414;&#12377;&#12290;&#12415;&#12387;&#12367;&#12473;&#12488;&#12450;&#12395;&#30331;&#37682;&#12373;&#12428;&#12390;&#12356;&#12427;&#12503;&#12521;&#12464;&#12452;&#12531;&#12399;&#12463;&#12522;&#12483;&#12463;&#12384;&#12369;&#12391;&#12480;&#12454;&#12531;&#12525;&#12540;&#12489;&#12391;&#12365;&#12414;&#12377;&#65281;
 </pre>
-
+</div>
 
 <p>
-     適切な情報が自動的にspecファイルに書き込まれました。もう一度、specファイルを作成するコマンドを実行してみましょう。今度は何も聞かれずにすぐにコマンドが終了してしまったはずです。というのも、対話プロンプトで入力されるような内容は、既に存在するspecファイルに書かれているからです。二度目以降は、依存関係などを更新するだけとなります。
+適切な情報が自動的にspecファイルに書き込まれました。もう一度、specファイルを作成するコマンドを実行してみましょう。今度は何も聞かれずにすぐにコマンドが終了してしまったはずです。というのも、対話プロンプトで入力されるような内容は、既に存在するspecファイルに書かれているからです。二度目以降は、依存関係などを更新するだけとなります。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-1-4" class="outline-3">
+<div id="outline-container-sec-1-4" class="outline-3">
 <h3 id="sec-1-4"><span class="section-number-3">1.4</span> 準備はできた？</h3>
 <div class="outline-text-3" id="text-1-4">
-
-<p>   プラグインを作成する準備は整いました。早速、いくつかのサンプルプラグインを見ながら、お気に入りのエディタを起動して、mikutterをハックしましょう。
+<p>
+プラグインを作成する準備は整いました。早速、いくつかのサンプルプラグインを見ながら、お気に入りのエディタを起動して、mikutterをハックしましょう。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-2" class="outline-2">
+<div id="outline-container-sec-2" class="outline-2">
 <h2 id="sec-2"><span class="section-number-2">2</span> 特定の時間にツイートする</h2>
 <div class="outline-text-2" id="text-2">
-
-<p>  このセクションでは、特定の時間に定型文をツイートする、botのようなプラグインを作成します。
+<p>
+このセクションでは、特定の時間に定型文をツイートする、botのようなプラグインを作成します。
 </p>
 </div>
-
-<div id="outline-container-2-1" class="outline-3">
+<div id="outline-container-sec-2-1" class="outline-3">
 <h3 id="sec-2-1"><span class="section-number-3">2.1</span> コード</h3>
 <div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">say "&#12424;&#12427;&#12411;&#12540;"</span>
+<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12398;&#20363;&#12391;&#12377;&#12290;&#12354;&#12367;&#12414;&#12391;Reserver&#12398;&#12487;&#12514;&#12531;&#12473;&#12488;&#12524;&#12540;&#12471;&#12519;&#12531;&#29992;&#12395;&#20316;&#12426;&#12414;&#12375;&#12383;&#12290;</span>
+<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12394;&#12398;&#12391;&#23455;&#25126;&#25237;&#20837;&#12399;&#12375;&#12394;&#12356;&#12371;&#12392;&#12290;&#12424;&#12427;&#12411;&#12540;&#12399;&#33258;&#20998;&#12391;&#12479;&#12452;&#12511;&#12531;&#12464;&#12434;&#21512;&#12431;&#12379;&#12427;&#12371;&#12392;&#12395;&#12371;&#12381;&#24847;&#32681;&#12364;&#12354;&#12427;&#12398;&#12391;&#12377;&#12290;</span>
 
+<span style="color: #00d7af;">Plugin</span>.create <span style="color: #5fafd7;">:yoruho</span> <span style="color: #a1db00;">do</span>
+  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">main</span>
+    <span style="color: #00d7af;">Reserver</span>.new(nextyrhtime){
+      say_yoruho(<span style="color: #00d7af;">Service</span>.primary)
+      <span style="color: #d18aff;">sleep</span> 1
+      main } <span style="color: #a1db00;">end</span>
 
+  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#27425;&#22238;&#12398;&#12424;&#12427;&#12411;&#12540;&#26178;&#38291;&#12434;&#21462;&#24471;</span>
+  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">nextyrhtime</span>
+    now = <span style="color: #00d7af;">Time</span>.new
+    result = <span style="color: #00d7af;">Time</span>.local(now.year, now.month, now.day, 0, 0)
+    <span style="color: #a1db00;">while</span> result &lt; now
+      result += 86400 <span style="color: #a1db00;">end</span>
+    result <span style="color: #a1db00;">end</span>
 
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
-<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">say "&#12424;&#12427;&#12411;&#12540;"</span>
-<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12398;&#20363;&#12391;&#12377;&#12290;&#12354;&#12367;&#12414;&#12391;Reserver&#12398;&#12487;&#12514;&#12531;&#12473;&#12488;&#12524;&#12540;&#12471;&#12519;&#12531;&#29992;&#12395;&#20316;&#12426;&#12414;&#12375;&#12383;&#12290;</span>
-<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12394;&#12398;&#12391;&#23455;&#25126;&#25237;&#20837;&#12399;&#12375;&#12394;&#12356;&#12371;&#12392;&#12290;&#12424;&#12427;&#12411;&#12540;&#12399;&#33258;&#20998;&#12391;&#12479;&#12452;&#12511;&#12531;&#12464;&#12434;&#21512;&#12431;&#12379;&#12427;&#12371;&#12392;&#12395;&#12371;&#12381;&#24847;&#32681;&#12364;&#12354;&#12427;&#12398;&#12391;&#12377;&#12290;</span>
-
-<span style="color: #1f5bff;">Plugin</span>.create <span style="color: #1f5bff;">:yoruho</span> <span style="color: #00af00;">do</span>
-  <span style="color: #00af00;">def</span> <span style="color: #ff8700;">main</span>
-    <span style="color: #1f5bff;">Reserver</span>.new(nextyrhtime){
-      say_yoruho(<span style="color: #1f5bff;">Service</span>.primary)
-      sleep 1
-      main } <span style="color: #00af00;">end</span>
-
-  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#27425;&#22238;&#12398;&#12424;&#12427;&#12411;&#12540;&#26178;&#38291;&#12434;&#21462;&#24471;</span>
-  <span style="color: #00af00;">def</span> <span style="color: #ff8700;">nextyrhtime</span>
-    now = <span style="color: #1f5bff;">Time</span>.new
-    result = <span style="color: #1f5bff;">Time</span>.local(now.year, now.month, now.day, 0, 0)
-    <span style="color: #00af00;">while</span> result &lt; now
-      result += 86400 <span style="color: #00af00;">end</span>
-    result <span style="color: #00af00;">end</span>
-
-  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12392;&#12388;&#12406;&#12420;&#12367;</span>
-  <span style="color: #00af00;">def</span> <span style="color: #ff8700;">say_yoruho</span>(service)
-    service.update(<span style="color: #1f5bff;">message</span>: <span style="color: #ff1f8b;">'&#12390;&#12362;&#12411;&#12540;'</span>) <span style="color: #00af00;">end</span>
+  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12392;&#12388;&#12406;&#12420;&#12367;</span>
+  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">say_yoruho</span>(service)
+    service.update(<span style="color: #5fafd7;">message</span>: <span style="color: #ff4ea3;">'&#12390;&#12362;&#12411;&#12540;'</span>) <span style="color: #a1db00;">end</span>
 
   main
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
-
+</div>
+</div>
 </div>
 
-</div>
-
-<div id="outline-container-2-2" class="outline-3">
+<div id="outline-container-sec-2-2" class="outline-3">
 <h3 id="sec-2-2"><span class="section-number-3">2.2</span> 解説</h3>
 <div class="outline-text-3" id="text-2-2">
-
-<p>   ほぼすべてのプラグインは、以下のテンプレートから作り始めることになります。
+<p>
+ほぼすべてのプラグインは、以下のテンプレートから作り始めることになります。
 </p>
+
 <pre class="example">
 Plugin.create :プラグイン名 do
   (プラグインの定義)
 end
 </pre>
 
-
 <p>
-   Plugin.create は、プラグインをコアに登録します。また、ブロック内でプラグインを実装するための様々なメソッドを提供しています。
-   この中で変数や関数を定義すれば外のスコープも汚さないので、基本的にはこのブロックの中だけでプラグインは完結させるべきです。
+Plugin.create は、プラグインをコアに登録します。また、ブロック内でプラグインを実装するための様々なメソッドを提供しています。
+この中で変数や関数を定義すれば外のスコープも汚さないので、基本的にはこのブロックの中だけでプラグインは完結させるべきです。
 </p>
-
 </div>
 
-<div id="outline-container-2-2-1" class="outline-4">
+<div id="outline-container-sec-2-2-1" class="outline-4">
 <h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> メソッドの定義</h4>
 <div class="outline-text-4" id="text-2-2-1">
-
-<p>    ブロックの中は、すぐにPluginのインスタンスの中で評価されます。defで
-    メソッドを定義して、メソッドの内外で呼ぶことができます。例では main
-    と next_yrh_time と say_yoruho を定義していますね。
+<p>
+ブロックの中は、すぐにPluginのインスタンスの中で評価されます。defで
+メソッドを定義して、メソッドの内外で呼ぶことができます。例では main
+と next_yrh_time と say_yoruho を定義していますね。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-2-2-2" class="outline-4">
+<div id="outline-container-sec-2-2-2" class="outline-4">
 <h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 文字列を投稿する</h4>
 <div class="outline-text-4" id="text-2-2-2">
-
-<ul>
-<li id="sec-2-2-2-1">Serviceオブジェクト<br/>
-     自動投稿を実現するためには、Serviceクラスのインスタンスを得ます。
-     Serviceクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
-     ントの数だけインスタンスがあります。なので、プラグインがこのクラス
-     をnewすることはありません。
+</div><ol class="org-ol"><li><a id="sec-2-2-2-1" name="sec-2-2-2-1"></a>Serviceオブジェクト<br  /><div class="outline-text-5" id="text-2-2-2-1">
+<p>
+自動投稿を実現するためには、Serviceクラスのインスタンスを得ます。
+Serviceクラスは、Twitter APIのラッパで、ログインしているTwitterアカウ
+ントの数だけインスタンスがあります。なので、プラグインがこのクラス
+をnewすることはありません。
+</p>
 
 <p>
-     これを書いている現在では、mikutterは１つのアカウントでしかサインアッ
-     プできないということになっているので、以下のように書けば、Serviceクラ
-     スを得ることができると覚えておいてください。
+これを書いている現在では、mikutterは１つのアカウントでしかサインアッ
+プできないということになっているので、以下のように書けば、Serviceクラ
+スを得ることができると覚えておいてください。
 </p>
+
 <pre class="example">
 Service.primary
 </pre>
 
-
 <p>
-     このメソッドは、現在アクティブな(選択されている)アカウントのServiceを返します。マルチアカウント下ではその時々によって返す値が変わる可能性があるので、注意してください。
+このメソッドは、現在アクティブな(選択されている)アカウントのServiceを返します。マルチアカウント下ではその時々によって返す値が変わる可能性があるので、注意してください。
 </p>
+</div>
 </li>
-</ul>
-<ul>
-<li id="sec-2-2-2-2">update<br/>
-     Service#update で、ツイートが投稿されます。
+
+<li><a id="sec-2-2-2-2" name="sec-2-2-2-2"></a>update<br  /><div class="outline-text-5" id="text-2-2-2-2">
+<p>
+Service#update で、ツイートが投稿されます。
+</p>
 
 <pre class="example">
 Service.primary.update(:message =&gt; "ツイートの本文")
 </pre>
 
-
 <p>
-     ツイートの投稿は非同期で行われるので、処理がここで止まるというこ
-     とはありません。
+ツイートの投稿は非同期で行われるので、処理がここで止まるというこ
+とはありません。
 </p>
-</li>
-</ul>
+</div>
+</li></ol>
 </div>
 
-</div>
-
-<div id="outline-container-2-2-3" class="outline-4">
+<div id="outline-container-sec-2-2-3" class="outline-4">
 <h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> Reserver 予約実行</h4>
 <div class="outline-text-4" id="text-2-2-3">
+<p>
+特定の時間に処理を実行したいことがあります。今回の場合だと、毎日
+0:00:00に、よるほーとつぶやくコードを実行したいわけです。そういう
+時は、mikutterが提供しているReserverを使います。
+</p>
 
-<p>    特定の時間に処理を実行したいことがあります。今回の場合だと、毎日
-    0:00:00に、よるほーとつぶやくコードを実行したいわけです。そういう
-    時は、mikutterが提供しているReserverを使います。
-</p>
 <p>
-    String, Time, Integerのいずれかの値を渡します。
+String, Time, Integerのいずれかの値を渡します。
 </p>
+
 <p>
-    Stringの場合はTime.parse()された値が使われ、Timeを渡すと、その時刻
-    になったら実行します。過去の時刻を渡すとすぐに実行されます。
+Stringの場合はTime.parse()された値が使われ、Timeを渡すと、その時刻
+になったら実行します。過去の時刻を渡すとすぐに実行されます。
 </p>
+
 <pre class="example">
 Reserver.new("10:00"){ 朝10時に実行 }
 </pre>
 
-
 <p>
-    Integerの場合は、その秒数待ってから実行します。
+Integerの場合は、その秒数待ってから実行します。
 </p>
+
 <pre class="example">
 Reserver.new(30){ 30秒後に実行 }
 Reserver.new(HYDE){ 156秒後に実行 }
 </pre>
 
-
 <p>
-    今のところ、Reserverのブロックは、メインスレッド <b>以外</b> のスレッドで実
-    行されます。非同期処理によるバグには気をつけてください。
+今のところ、Reserverのブロックは、メインスレッド <b>以外</b> のスレッドで実
+行されます。非同期処理によるバグには気をつけてください。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-2-3" class="outline-3">
+<div id="outline-container-sec-2-3" class="outline-3">
 <h3 id="sec-2-3"><span class="section-number-3">2.3</span> まとめ</h3>
 <div class="outline-text-3" id="text-2-3">
-
-<p>   ReserverとService#updateについて学びました。
-   Service.primary.update() でツイートの投稿ができます。
-   Reserverは特定の時間に処理を実行するためのクラスです。
+<p>
+ReserverとService#updateについて学びました。
+Service.primary.update() でツイートの投稿ができます。
+Reserverは特定の時間に処理を実行するためのクラスです。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-3" class="outline-2">
+<div id="outline-container-sec-3" class="outline-2">
 <h2 id="sec-3"><span class="section-number-2">3</span> 特殊なタイムライン</h2>
 <div class="outline-text-2" id="text-3">
-
-<p>  現在のmikutterのUIは、以下のような構成です。
-</p>
 <p>
-  <img src="window-hierarchy.png"  alt="window-hierarchy.png" />
-</p>
-<p>
-  ウィンドウが一つ有り、その中にユーザは任意の個数のペインを作ります。
-  ペインの中には１つ以上のタブがあり、タブの中身はプラグイン次第です
-  が、基本的にはタイムラインが入っているはずです。
-</p>
-<p>
-  このセクションでは、特殊な抽出条件を持ったタイムラインを作成します。
-  タイムラインを用いたあらゆるプラグインに応用できる知識です。
+現在のmikutterのUIは、以下のような構成です。
 </p>
 
+
+<div class="figure">
+<p><img src="window-hierarchy.png" alt="window-hierarchy.png" />
+</p>
 </div>
 
-<div id="outline-container-3-1" class="outline-3">
+<p>
+ウィンドウが一つ有り、その中にユーザは任意の個数のペインを作ります。
+ペインの中には１つ以上のタブがあり、タブの中身はプラグイン次第です
+が、基本的にはタイムラインが入っているはずです。
+</p>
+
+<p>
+このセクションでは、特殊な抽出条件を持ったタイムラインを作成します。
+タイムラインを用いたあらゆるプラグインに応用できる知識です。
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
 <h3 id="sec-3-1"><span class="section-number-3">3.1</span> コード</h3>
 <div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">mikutter&#12395;&#12388;&#12356;&#12390;&#12501;&#12457;&#12525;&#12452;&#12540;&#12364;&#35328;&#21450;&#12375;&#12383;&#12425;&#12289;&#12375;&#12400;&#12425;&#12367;TL&#12395;&#20837;&#12428;&#12427;</span>
 
+<span style="color: #00d7af;">Plugin</span>.create <span style="color: #5fafd7;">:gossip_detector</span> <span style="color: #a1db00;">do</span>
 
-
-
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
-<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">mikutter&#12395;&#12388;&#12356;&#12390;&#12501;&#12457;&#12525;&#12452;&#12540;&#12364;&#35328;&#21450;&#12375;&#12383;&#12425;&#12289;&#12375;&#12400;&#12425;&#12367;TL&#12395;&#20837;&#12428;&#12427;</span>
-
-<span style="color: #1f5bff;">Plugin</span>.create <span style="color: #1f5bff;">:gossip_detector</span> <span style="color: #00af00;">do</span>
-
-  <span style="color: #1f5bff;">EXPIRE</span> = 300                  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">5 min</span>
+  <span style="color: #00d7af;">EXPIRE</span> = 300                  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">5 min</span>
 
   gossip_users = {}
 
-  tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">'Gossip Detector'</span> <span style="color: #00af00;">do</span>
-    set_icon <span style="color: #1f5bff;">MUI</span>::<span style="color: #1f5bff;">Skin</span>.get(<span style="color: #ff1f8b;">"timeline.png"</span>)
-    timeline <span style="color: #1f5bff;">:gossip_detector</span>
-  <span style="color: #00af00;">end</span>
+  tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">'Gossip Detector'</span> <span style="color: #a1db00;">do</span>
+    set_icon <span style="color: #00d7af;">MUI</span>::<span style="color: #00d7af;">Skin</span>.get(<span style="color: #ff4ea3;">"timeline.png"</span>)
+    timeline <span style="color: #5fafd7;">:gossip_detector</span>
+  <span style="color: #a1db00;">end</span>
 
-  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12484;&#12452;&#12540;&#12488;&#12398;&#21463;&#20449;&#12289;&#25391;&#12426;&#20998;&#12369;</span>
-  onupdate <span style="color: #00af00;">do</span> |service, messages|
-    timeline(<span style="color: #1f5bff;">:gossip_detector</span>) &lt;&lt; message.select { |m|
-      <span style="color: #00af00;">if</span> m.to_s =~ <span style="color: #ff1f8b;">/mikutter|&#12415;&#12367;&#12387;&#12383;/</span>
-        gossip_users[m.user] = <span style="color: #1f5bff;">Time</span>.now + <span style="color: #1f5bff;">EXPIRE</span>
-        <span style="color: #ff8700;">true</span>
-      <span style="color: #00af00;">else</span>
-        gossip_users.has_key?(m.user) <span style="color: #00af00;">and</span> gossip_users[m.user] &gt; m[<span style="color: #1f5bff;">:created</span>]
-      <span style="color: #00af00;">end</span>
+  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12484;&#12452;&#12540;&#12488;&#12398;&#21463;&#20449;&#12289;&#25391;&#12426;&#20998;&#12369;</span>
+  onupdate <span style="color: #a1db00;">do</span> |service, messages|
+    timeline(<span style="color: #5fafd7;">:gossip_detector</span>) &lt;&lt; message.select { |m|
+      <span style="color: #a1db00;">if</span> m.to_s =~ <span style="color: #ff4ea3;">/mikutter|&#12415;&#12367;&#12387;&#12383;/</span>
+        gossip_users[m.user] = <span style="color: #00d7af;">Time</span>.now + <span style="color: #00d7af;">EXPIRE</span>
+        <span style="color: #5fafd7;">true</span>
+      <span style="color: #a1db00;">else</span>
+        gossip_users.has_key?(m.user) <span style="color: #a1db00;">and</span> gossip_users[m.user] &gt; m[<span style="color: #5fafd7;">:created</span>]
+      <span style="color: #a1db00;">end</span>
     }
-  <span style="color: #00af00;">end</span>
+  <span style="color: #a1db00;">end</span>
 
-<span style="color: #00af00;">end</span>
-
+<span style="color: #a1db00;">end</span>
 </pre>
-
-
+</div>
+</div>
 </div>
 
-</div>
-
-<div id="outline-container-3-2" class="outline-3">
+<div id="outline-container-sec-3-2" class="outline-3">
 <h3 id="sec-3-2"><span class="section-number-3">3.2</span> 解説</h3>
 <div class="outline-text-3" id="text-3-2">
-
-<p>   このプラグインは、タイムラインをひとつ作って、フォロイーが mikutter に
-   ついて何か言及したら、そのツイートをそのタイムラインにも表示します。
-   これだけだと、現在 mikutter に標準で入っている extract plugin と同じで
-   すが、このプラグインはその人のツイートを、マッチしたツイートから5分間
-   の間は、無条件にタイムラインに入れます。
-</p>
 <p>
-   最初に mikutter の名前を出して、あとでツイートを小分けにして mikutter
-   について言及しているかもしれないからです。そんなことないかもしれませんが、こんな変なフィルタも書けるんだよというデモなので勘弁して下さい。
+このプラグインは、タイムラインをひとつ作って、フォロイーが mikutter に
+ついて何か言及したら、そのツイートをそのタイムラインにも表示します。
+これだけだと、現在 mikutter に標準で入っている extract plugin と同じで
+すが、このプラグインはその人のツイートを、マッチしたツイートから5分間
+の間は、無条件にタイムラインに入れます。
 </p>
 
+<p>
+最初に mikutter の名前を出して、あとでツイートを小分けにして mikutter
+について言及しているかもしれないからです。そんなことないかもしれませんが、こんな変なフィルタも書けるんだよというデモなので勘弁して下さい。
+</p>
 </div>
 
-<div id="outline-container-3-2-1" class="outline-4">
+<div id="outline-container-sec-3-2-1" class="outline-4">
 <h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> イベントの待受</h4>
 <div class="outline-text-4" id="text-3-2-1">
-
-<p>    ユーザやTwitterから何かしらの入力があれば、mikutter内ではイベントが発生します。
-    ほとんどのプラグインは、このイベントを受け取って何かを実行することで、目的を達成します。
-    Plugin.create のブロック内に、以下のように書けば、イベント <b>event</b> が発生したときに <b>処理</b> が実行されます。その際、引数は <b>params</b> にセットされます。
+<p>
+ユーザやTwitterから何かしらの入力があれば、mikutter内ではイベントが発生します。
+ほとんどのプラグインは、このイベントを受け取って何かを実行することで、目的を達成します。
+Plugin.create のブロック内に、以下のように書けば、イベント <b>event</b> が発生したときに <b>処理</b> が実行されます。その際、引数は <b>params</b> にセットされます。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">onevent <span style="color: #00af00;">do</span> |params|
-  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#20966;&#29702;</span>
-<span style="color: #00af00;">end</span>
+<pre class="src src-ruby">onevent <span style="color: #a1db00;">do</span> |params|
+  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#20966;&#29702;</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
+</div>
 
 <p>
-    <b>onevent</b> は、 <b>on_event</b> と書いても <b>event</b> を待ち受けます。イベント名が長いなど、つなげて書くと読みづらい場合は、間にアンダーバーを入れるパターンを使ってもいいかもしれません。
-    引数は、イベントによって異なります。
-    mikutter プラグインの開発にとってイベントはとても重要なものですが、数が多いので、このあと出てくるぶんについても逐一解説はしません。
-    各イベントについて知りたい場合は、付録の<a href="./event.html">Events and Filters</a> を参照してください。
-    ただし、これがmikutterのすべてのイベントを網羅しているわけではありません。
-    プラグインが新しい種類のイベントを定義することができるからです。
+<b>onevent</b> は、 <b>on_event</b> と書いても <b>event</b> を待ち受けます。イベント名が長いなど、つなげて書くと読みづらい場合は、間にアンダーバーを入れるパターンを使ってもいいかもしれません。
+引数は、イベントによって異なります。
+mikutter プラグインの開発にとってイベントはとても重要なものですが、数が多いので、このあと出てくるぶんについても逐一解説はしません。
+各イベントについて知りたい場合は、付録の<a href="./event.html">Events and Filters</a> を参照してください。
+ただし、これがmikutterのすべてのイベントを網羅しているわけではありません。
+プラグインが新しい種類のイベントを定義することができるからです。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-3-2-2" class="outline-4">
+<div id="outline-container-sec-3-2-2" class="outline-4">
 <h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> タブとタイムライン</h4>
 <div class="outline-text-4" id="text-3-2-2">
-
-<p>    UIの定義を見てみましょう。このプラグインは、一つのタブを追加して、そのなかに一つのタイムラインがあるという、最も標準的なUIを持っています。
-    タブを作成するには、tabメソッドを使います。
+<p>
+UIの定義を見てみましょう。このプラグインは、一つのタブを追加して、そのなかに一つのタイムラインがあるという、最も標準的なUIを持っています。
+タブを作成するには、tabメソッドを使います。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">"Gossip Detector"</span>
+<pre class="src src-ruby">tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">"Gossip Detector"</span>
 </pre>
-
+</div>
 
 <p>
-    第一引数はタブを区別するための一意な名前、第二引数はタイトル、具体的にはタブにフォーカスを合わせた時に出てくるチップヘルプのテキストを指定します。これだけでタブは表示されます。次にタイムラインを用意しましょう。上のコードにブロックを与え、少しばかりコードをかいてやります。
+第一引数はタブを区別するための一意な名前、第二引数はタイトル、具体的にはタブにフォーカスを合わせた時に出てくるチップヘルプのテキストを指定します。これだけでタブは表示されます。次にタイムラインを用意しましょう。上のコードにブロックを与え、少しばかりコードをかいてやります。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">'Gossip Detector'</span> <span style="color: #00af00;">do</span>
-  set_icon <span style="color: #1f5bff;">MUI</span>::<span style="color: #1f5bff;">Skin</span>.get(<span style="color: #ff1f8b;">"timeline.png"</span>)
-  timeline <span style="color: #1f5bff;">:gossip_detector</span>
-<span style="color: #00af00;">end</span>
+<pre class="src src-ruby">tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">'Gossip Detector'</span> <span style="color: #a1db00;">do</span>
+  set_icon <span style="color: #00d7af;">MUI</span>::<span style="color: #00d7af;">Skin</span>.get(<span style="color: #ff4ea3;">"timeline.png"</span>)
+  timeline <span style="color: #5fafd7;">:gossip_detector</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
+</div>
 
 <p>
-    タイムラインを作成しているのは三行目です。引数はタイムラインを識別するための一意な名前です。例ではタブと衝突していますが、タブとタイムラインのように、種類が違うウィジェットの名前がかぶっても問題ありません。
-    二行目のset_iconは、タブのアイコンを設定しています。画像ファイルへのパスか、Web上のURLを使用することもできます。
+タイムラインを作成しているのは三行目です。引数はタイムラインを識別するための一意な名前です。例ではタブと衝突していますが、タブとタイムラインのように、種類が違うウィジェットの名前がかぶっても問題ありません。
+二行目のset_iconは、タブのアイコンを設定しています。画像ファイルへのパスか、Web上のURLを使用することもできます。
 </p>
-<ul>
-<li id="sec-3-2-2-1">タイムラインにツイートを追加する<br/>
-     作成したタイムラインを表示することは出来ました。次に、ツイートを
-     タイムラインに追加する方法です。これは簡単です。
+</div>
 
+<ol class="org-ol"><li><a id="sec-3-2-2-1" name="sec-3-2-2-1"></a>タイムラインにツイートを追加する<br  /><div class="outline-text-5" id="text-3-2-2-1">
+<p>
+作成したタイムラインを表示することは出来ました。次に、ツイートを
+タイムラインに追加する方法です。これは簡単です。
+</p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">timeline(<span style="color: #1f5bff;">:gossip_detector</span>) &lt;&lt; <span style="color: #1f5bff;">Message</span>
+<pre class="src src-ruby">timeline(<span style="color: #5fafd7;">:gossip_detector</span>) &lt;&lt; <span style="color: #00d7af;">Message</span>
 </pre>
+</div>
 
+<p>
+timelineメソッドに先ほど作成した時と同じ名前を指定してやれば、タイムラインのインターフェイスオブジェクトが取得できます。
+それに&lt;&lt;演算子で、Messageかその配列を渡せばそのツイートをタイムラインに追加できます。
+</p>
 
 <p>
-     timelineメソッドに先ほど作成した時と同じ名前を指定してやれば、タイムラインのインターフェイスオブジェクトが取得できます。
-     それに&lt;&lt;演算子で、Messageかその配列を渡せばそのツイートをタイムラインに追加できます。
+Messageについては、結構複雑なので後述します。今回の例では、 
+Message#user を使って、ツイートしたユーザを取得しているのと、
+Message#[] の <b>:created</b> (投稿日時)を取得しています。
 </p>
+
 <p>
-     Messageについては、結構複雑なので後述します。今回の例では、 
-     Message#user を使って、ツイートしたユーザを取得しているのと、
-     Message#[] の <b>:created</b> (投稿日時)を取得しています。
+この情報を元に、mikutterの言及があれば今後5分間だけツイートを抽出
+するフィルタを実現できるわけです。
+少し実装を変えれば、他のツイッタークライアントではできないような
+複雑なフィルタを比較的簡単に実装することができるでしょう。
 </p>
-<p>
-     この情報を元に、mikutterの言及があれば今後5分間だけツイートを抽出
-     するフィルタを実現できるわけです。
-     少し実装を変えれば、他のツイッタークライアントではできないような
-     複雑なフィルタを比較的簡単に実装することができるでしょう。
-</p>
-</li>
-</ul>
+</div>
+</li></ol>
 </div>
 </div>
 
-</div>
-
-<div id="outline-container-3-3" class="outline-3">
+<div id="outline-container-sec-3-3" class="outline-3">
 <h3 id="sec-3-3"><span class="section-number-3">3.3</span> まとめ</h3>
 <div class="outline-text-3" id="text-3-3">
-
-<p>   イベントと、タイムラインの作り方について学びました。
-   イベントは、onXXXで定義し、mikutterやプラグインが発生させたイベントをトリガーに起動します。
-   tabはタブの作成、timelineはタイムライン作成のメソッドです。
-   既に作成したタブやタイムラインと同じ名前を指定すると、既に存在するオブジェクトが取得できます。
+<p>
+イベントと、タイムラインの作り方について学びました。
+イベントは、onXXXで定義し、mikutterやプラグインが発生させたイベントをトリガーに起動します。
+tabはタブの作成、timelineはタイムライン作成のメソッドです。
+既に作成したタブやタイムラインと同じ名前を指定すると、既に存在するオブジェクトが取得できます。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-4" class="outline-2">
+<div id="outline-container-sec-4" class="outline-2">
 <h2 id="sec-4"><span class="section-number-2">4</span> キーワードミュート機能</h2>
 <div class="outline-text-2" id="text-4">
-
-<p>  mikutter標準のミュート機能は、すべてのタイムラインからツイートを非表示にします。このセクションでは、キーワードミュートを実現するために、イベントが発生する前にその内容を編集・削除するためのイベントフィルタ機能、またそれを単体で使って、プラグイン間通信を実現する方法について解説します。
+<p>
+mikutter標準のミュート機能は、すべてのタイムラインからツイートを非表示にします。このセクションでは、キーワードミュートを実現するために、イベントが発生する前にその内容を編集・削除するためのイベントフィルタ機能、またそれを単体で使って、プラグイン間通信を実現する方法について解説します。
 </p>
-
 </div>
 
-<div id="outline-container-4-1" class="outline-3">
+<div id="outline-container-sec-4-1" class="outline-3">
 <h3 id="sec-4-1"><span class="section-number-3">4.1</span> コード</h3>
 <div class="outline-text-3" id="text-4-1">
-
-<p>   今回は、特定の単語の入ったツイートを非表示にします。
+<p>
+今回は、特定の単語の入ったツイートを非表示にします。
 </p>
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:mute_word</span>) <span style="color: #a1db00;">do</span>
 
-<span style="color: #1f5bff;">Plugin</span>.create(<span style="color: #1f5bff;">:mute_word</span>) <span style="color: #00af00;">do</span>
+  exclude_words = [<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>,<span style="color: #ff4ea3;">"&#21407;&#30330;"</span>] <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12501;&#12451;&#12523;&#12479;&#12377;&#12427;&#21336;&#35486;</span>
 
-  exclude_words = [<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>,<span style="color: #ff1f8b;">"&#21407;&#30330;"</span>] <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12501;&#12451;&#12523;&#12479;&#12377;&#12427;&#21336;&#35486;</span>
-
-  filter_show_filter <span style="color: #00af00;">do</span> |msgs|
-    msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> exclude_words.any?{ |word| m.to_s.include?(word) } }
+  filter_show_filter <span style="color: #a1db00;">do</span> |msgs|
+    msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> exclude_words.any?{ |word| m.to_s.include?(word) } }
     [msgs]
-  <span style="color: #00af00;">end</span>
+  <span style="color: #a1db00;">end</span>
 
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
-
+</div>
+</div>
 </div>
 
-</div>
-
-<div id="outline-container-4-2" class="outline-3">
+<div id="outline-container-sec-4-2" class="outline-3">
 <h3 id="sec-4-2"><span class="section-number-3">4.2</span> 解説</h3>
 <div class="outline-text-3" id="text-4-2">
-
-
-</div>
-
-<div id="outline-container-4-2-1" class="outline-4">
+</div><div id="outline-container-sec-4-2-1" class="outline-4">
 <h4 id="sec-4-2-1"><span class="section-number-4">4.2.1</span> イベントフィルタ</h4>
 <div class="outline-text-4" id="text-4-2-1">
-
-<ul>
-<li id="sec-4-2-1-1">イベントの引数を編集する<br/>
-     プラグインがツイートを取得するためにイベントを使用していることは前のセクションで触れました。今回は、イベントの発生時にそれを捕まえて、引数を書き換えることができる「イベントフィルタ」を使用します。
-
+</div><ol class="org-ol"><li><a id="sec-4-2-1-1" name="sec-4-2-1-1"></a>イベントの引数を編集する<br  /><div class="outline-text-5" id="text-4-2-1-1">
 <p>
-     フィルタは、Plugin.createのブロック内で以下のように宣言します。
+プラグインがツイートを取得するためにイベントを使用していることは前のセクションで触れました。今回は、イベントの発生時にそれを捕まえて、引数を書き換えることができる「イベントフィルタ」を使用します。
 </p>
 
+<p>
+フィルタは、Plugin.createのブロック内で以下のように宣言します。
+</p>
 
+<div class="org-src-container">
 
-<pre class="src src-ruby">filter_update <span style="color: #00af00;">do</span> |service, msgs|
-  msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> m.to_s.include?(<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>) }
+<pre class="src src-ruby">filter_update <span style="color: #a1db00;">do</span> |service, msgs|
+  msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> m.to_s.include?(<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>) }
   [service, msgs]
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
+</div>
 
+<p>
+イベントが発生すると、イベントと同じ名前のフィルタが登録されていな
+いか確認して、登録されていたら先にフィルタを実行し、その戻り値を新
+たに引数リストにします。なので、普通のイベントと同じように引数を受
+け取り、加工した結果を返すことで、イベントの引数を変更できます。
+</p>
 
 <p>
-     イベントが発生すると、イベントと同じ名前のフィルタが登録されていな
-     いか確認して、登録されていたら先にフィルタを実行し、その戻り値を新
-     たに引数リストにします。なので、普通のイベントと同じように引数を受
-     け取り、加工した結果を返すことで、イベントの引数を変更できます。
+この場合は、updateイベントで配送されるツイートをすべて確認して、
+「政治」「原発」というキーワードが含まれたツイートを削除します。
+三行目が戻り値ですが、ここに注目してください。引数を配列で返してい
+ます。こうやって、加工した値を返してやることで、実際にイベントが発
+生する時には、該当するツイートが除外されるようになるわけです。
 </p>
+
 <p>
-     この場合は、updateイベントで配送されるツイートをすべて確認して、
-     「政治」「原発」というキーワードが含まれたツイートを削除します。
-     三行目が戻り値ですが、ここに注目してください。引数を配列で返してい
-     ます。こうやって、加工した値を返してやることで、実際にイベントが発
-     生する時には、該当するツイートが除外されるようになるわけです。
+一つ注意しなければいけないのは、戻り値の配列は、必ず引数の数と一
+致しなければいけないということです。なぜなら、イベントの引数の数
+は、今のところ常に固定だからです。
 </p>
-<p>
-     一つ注意しなければいけないのは、戻り値の配列は、必ず引数の数と一
-     致しなければいけないということです。なぜなら、イベントの引数の数
-     は、今のところ常に固定だからです。
-</p>
+</div>
 </li>
-</ul>
-<ul>
-<li id="sec-4-2-1-2">イベントフィルタを使ったプラグイン間の通信<br/>
-     イベントを使えば、別のプラグインに情報を伝えることができるという
-     のは前に紹介したとおりです。
+
+<li><a id="sec-4-2-1-2" name="sec-4-2-1-2"></a>イベントフィルタを使ったプラグイン間の通信<br  /><div class="outline-text-5" id="text-4-2-1-2">
+<p>
+イベントを使えば、別のプラグインに情報を伝えることができるという
+のは前に紹介したとおりです。
+</p>
 
 <p>
-     しかし、イベントは受け取りたい方がイベントを待ち受けて、発信されるのを待つ必要があります。
-     実際には受け取り側のリクエストに即座に答えるような通信をしたいことのほうが多いと思われますが、
-     こういった用途にもイベントフィルタを使用します。
+しかし、イベントは受け取りたい方がイベントを待ち受けて、発信されるのを待つ必要があります。
+実際には受け取り側のリクエストに即座に答えるような通信をしたいことのほうが多いと思われますが、
+こういった用途にもイベントフィルタを使用します。
 </p>
+
 <p>
-     まず、イベントフィルタは、イベントが発生していなくても単独で呼び出すことができます。
+まず、イベントフィルタは、イベントが発生していなくても単独で呼び出すことができます。
 </p>
+
 <pre class="example">
 Plugin.filtering(:update, Post.primary_service, [Instance of Messages...])
 </pre>
 
-
 <p>
-     この戻り値は、[Post, [Message&hellip;]]のような、イベントフィルタの戻
-     り値そのままです。
-</p>
-<p>
-     次に、イベントフィルタは、イベントが未定義でも作成できます。
+この戻り値は、[Post, [Message&#x2026;]]のような、イベントフィルタの戻
+り値そのままです。
 </p>
 
+<p>
+次に、イベントフィルタは、イベントが未定義でも作成できます。
+</p>
 
+<div class="org-src-container">
 
-<pre class="src src-ruby">filter_plus <span style="color: #00af00;">do</span> |num|
+<pre class="src src-ruby">filter_plus <span style="color: #a1db00;">do</span> |num|
   [num + 1]
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
-
-<p>
-     つまり、直接呼び出されることだけを想定したフィルタを勝手に定義し
-     てしまえば、リクエスト-レスポンス型の通信が実現できるのです。
-</p>
-<ul>
-<li id="sec-4-2-1-2-1">mikutterから完全に排除するには<br/>
-      実は、updateイベントのフィルタでは、ホームタイムラインから表示さ
-      れなくなるだけで、他のタイムラインからはフィルタリングできていま
-      せん。この実装のほうがいい場合もあるでしょうが、mikutter上にそも
-      そも表示されないようにしたい場合もあると思います。
+</div>
 
 <p>
-      そのためには、タイムラインが表示前にフィルタを呼び出していれば、
-      そこで削除することができますね。当然、mikutterはミュートを実現す
-      るために、表示する寸前に以下のようなコードでフィルタを呼び出して
-      います。
+つまり、直接呼び出されることだけを想定したフィルタを勝手に定義し
+てしまえば、リクエスト-レスポンス型の通信が実現できるのです。
 </p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-4-2-1-2-1" name="sec-4-2-1-2-1"></a>mikutterから完全に排除するには<br  /><div class="outline-text-6" id="text-4-2-1-2-1">
+<p>
+実は、updateイベントのフィルタでは、ホームタイムラインから表示さ
+れなくなるだけで、他のタイムラインからはフィルタリングできていま
+せん。この実装のほうがいい場合もあるでしょうが、mikutter上にそも
+そも表示されないようにしたい場合もあると思います。
+</p>
+
+<p>
+そのためには、タイムラインが表示前にフィルタを呼び出していれば、
+そこで削除することができますね。当然、mikutterはミュートを実現す
+るために、表示する寸前に以下のようなコードでフィルタを呼び出して
+います。
+</p>
+
 <pre class="example">
 Plugin.filtering(:show_filter, message)
 </pre>
 
-
 <p>
-      つまり、前に書いたupdateフィルタは以下のように書き換えれば、すべ
-      てのタイムラインに影響するようになります。
+つまり、前に書いたupdateフィルタは以下のように書き換えれば、すべ
+てのタイムラインに影響するようになります。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">filter_show_filter <span style="color: #00af00;">do</span> |msgs|
-  msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> m.to_s.include?(<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>) }
+<pre class="src src-ruby">filter_show_filter <span style="color: #a1db00;">do</span> |msgs|
+  msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> m.to_s.include?(<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>) }
   [msgs]
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
+</div>
 
 <p>
-      show_filterは、notifyプラグインからも使用されていて、TLに表示さ
-      れないツイートはポップアップ通知や効果音も鳴らさないようになって
-      います。こんなふうに、他のプラグインが他の用途のためのフィルタを
-      使用したり、コールバックを登録することもできます。イベントとフィ
-      ルタをうまく使えば、プラグインそれ自身に拡張性を持たせることがで
-      きます。
+show_filterは、notifyプラグインからも使用されていて、TLに表示さ
+れないツイートはポップアップ通知や効果音も鳴らさないようになって
+います。こんなふうに、他のプラグインが他の用途のためのフィルタを
+使用したり、コールバックを登録することもできます。イベントとフィ
+ルタをうまく使えば、プラグインそれ自身に拡張性を持たせることがで
+きます。
 </p>
-</li>
-</ul>
-</li>
-</ul>
+</div>
+</li></ol>
+</li></ol>
 </div>
 </div>
 
-</div>
-
-<div id="outline-container-4-3" class="outline-3">
+<div id="outline-container-sec-4-3" class="outline-3">
 <h3 id="sec-4-3"><span class="section-number-3">4.3</span> まとめ</h3>
 <div class="outline-text-3" id="text-4-3">
-
-<p>   イベントフィルタについて学びました。
-   filter_XXX でフィルタを作成し、Plugin.filteringでそれらを利用することができます。
+<p>
+イベントフィルタについて学びました。
+filter_XXX でフィルタを作成し、Plugin.filteringでそれらを利用することができます。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-5" class="outline-2">
+<div id="outline-container-sec-5" class="outline-2">
 <h2 id="sec-5"><span class="section-number-2">5</span> STOT形式でコピー</h2>
 <div class="outline-text-2" id="text-5">
-
-<p>  STOT(ShareTwitterOnTumblr)は、ツイートをTumblrに投稿するためのフォー
-  マットの一つです。様々なアプリケーションで使われていることもあり、こ
-  の形式でツイートをコピーできると何かと便利です。
-  このセクションでは、
+<p>
+STOT(ShareTwitterOnTumblr)は、ツイートをTumblrに投稿するためのフォー
+マットの一つです。様々なアプリケーションで使われていることもあり、こ
+の形式でツイートをコピーできると何かと便利です。
+このセクションでは、
 </p>
-<ul>
+
+<ul class="org-ul">
 <li>ユーザが選択して呼び出せる任意の機能(mikutterコマンド)の追加方法
 </li>
 <li>ツイートの情報(Message)とユーザ情報(User)のオブジェクトの取扱方
 </li>
 </ul>
 
-
 <p>
-  について解説します。
+について解説します。
 </p>
-
 </div>
 
-<div id="outline-container-5-1" class="outline-3">
+<div id="outline-container-sec-5-1" class="outline-3">
 <h3 id="sec-5-1"><span class="section-number-3">5.1</span> コード</h3>
 <div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
 
+<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:copy_as_stot</span>) <span style="color: #a1db00;">do</span>
 
-
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
-
-<span style="color: #1f5bff;">Plugin</span>.create(<span style="color: #1f5bff;">:copy_as_stot</span>) <span style="color: #00af00;">do</span>
-
-  command(<span style="color: #1f5bff;">:copy_as_stot</span>,
-    <span style="color: #1f5bff;">name</span>: <span style="color: #ff1f8b;">'STOT&#24418;&#24335;&#12391;&#12467;&#12500;&#12540;'</span>,
-    <span style="color: #1f5bff;">condition</span>: <span style="color: #1f5bff;">Plugin</span>::<span style="color: #1f5bff;">Command</span>[<span style="color: #1f5bff;">:HasOneMessage</span>],
-    <span style="color: #1f5bff;">visible</span>: <span style="color: #ff8700;">true</span>,
-    <span style="color: #1f5bff;">role</span>: <span style="color: #1f5bff;">:timeline</span>) <span style="color: #00af00;">do</span> |opt|
+  command(<span style="color: #5fafd7;">:copy_as_stot</span>,
+    <span style="color: #5fafd7;">name</span>: <span style="color: #ff4ea3;">'STOT&#24418;&#24335;&#12391;&#12467;&#12500;&#12540;'</span>,
+    <span style="color: #5fafd7;">condition</span>: <span style="color: #00d7af;">Plugin</span>::<span style="color: #00d7af;">Command</span>[<span style="color: #5fafd7;">:HasOneMessage</span>],
+    <span style="color: #5fafd7;">visible</span>: <span style="color: #5fafd7;">true</span>,
+    <span style="color: #5fafd7;">role</span>: <span style="color: #5fafd7;">:timeline</span>) <span style="color: #a1db00;">do</span> |opt|
       message = opt.messages.first
-      screen_name = message.user[<span style="color: #1f5bff;">:idname</span>]
-      <span style="color: #1f5bff;">Gtk</span>::<span style="color: #1f5bff;">Clipboard</span>.copy(<span style="color: #ff8700;">"#{screen_name}</span><span style="color: #ff1f8b;">:</span><span style="color: #ff8700;"> #{message.to_s}</span><span style="color: #ff1f8b;"> [https://twitter.com</span><span style="color: #ff8700;">/#{screen_name}</span><span style="color: #ff1f8b;">/status</span><span style="color: #ff8700;">/#{message.id}</span><span style="color: #ff1f8b;">]"</span>)
-  <span style="color: #00af00;">end</span>
+      screen_name = message.user[<span style="color: #5fafd7;">:idname</span>]
+      <span style="color: #00d7af;">Gtk</span>::<span style="color: #00d7af;">Clipboard</span>.copy(<span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff4ea3;">: </span><span style="color: #ff8700;">#{message.to_s}</span><span style="color: #ff4ea3;"> [https://twitter.com/</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff4ea3;">/status/</span><span style="color: #ff8700;">#{message.id}</span><span style="color: #ff4ea3;">]"</span>)
+  <span style="color: #a1db00;">end</span>
 
-<span style="color: #00af00;">end</span>
+<span style="color: #a1db00;">end</span>
 </pre>
-
 </div>
-
 </div>
-
-<div id="outline-container-5-2" class="outline-3">
+</div>
+<div id="outline-container-sec-5-2" class="outline-3">
 <h3 id="sec-5-2"><span class="section-number-3">5.2</span> 解説</h3>
 <div class="outline-text-3" id="text-5-2">
-
-
-</div>
-
-<div id="outline-container-5-2-1" class="outline-4">
+</div><div id="outline-container-sec-5-2-1" class="outline-4">
 <h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> STOTについて</h4>
 <div class="outline-text-4" id="text-5-2-1">
-
-<p>    まずはじめに、STOTの一例を示します。
+<p>
+まずはじめに、STOTの一例を示します。
 </p>
+
 <pre class="example">
 toshi_a: 会社でふぁぼるのたのしい [http://twitter.com/#!/toshi_a/status/151947400691449856]
 </pre>
 
-
 <p>
-    こんなふうに、ユーザのscreen_nameと本文、URL(ツイートのID)の３つの
-    要素が含まれています。要は、この３つの要素だけ取得して、クリップボー
-    ドに合成したテキストを送れば終わりです。
+こんなふうに、ユーザのscreen_nameと本文、URL(ツイートのID)の３つの
+要素が含まれています。要は、この３つの要素だけ取得して、クリップボー
+ドに合成したテキストを送れば終わりです。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-5-2-2" class="outline-4">
+<div id="outline-container-sec-5-2-2" class="outline-4">
 <h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> mikutterコマンド</h4>
 <div class="outline-text-4" id="text-5-2-2">
-
-<p>    この機能の呼び出し方法ですが、
+<p>
+この機能の呼び出し方法ですが、
 </p>
-<ul>
+
+<ul class="org-ul">
 <li>ツイートを右クリックしたときに出るメニュー
 </li>
 <li>ツイートを選択した状態で設定されたショートカットキーを押したとき
-      に実行される
+に実行される
 </li>
 </ul>
 
+<p>
+の2つ方法で呼び出せるようにします。mikutterを使っていれば気づくか
+と思いますが、右クリックメニューで選択できる項目はすべてショートカッ
+トキーに割り当てることができます。これは、どちらも登録された
+「mikutterコマンド」を参照しているからで、ここに一つ機能を追加する
+ようにしておけば、ユーザは右クリックメニューから使ったり、ショート
+カットキーに割り当てたり、好きに使うことができます。
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-2-2-1" name="sec-5-2-2-1"></a>commandメソッド<br  /><ol class="org-ol"><li><a id="sec-5-2-2-1-1" name="sec-5-2-2-1-1"></a>commandメソッドの引数<br  /><div class="outline-text-6" id="text-5-2-2-1-1">
+<p>
+commandの第一引数には、コマンドの識別名(slug)を渡します。今回のプラグインのような、
+コマンドを一つだけ提供するのが目的である場合は、プラグインスラッグと同じにする人が多いようです。
+しかし、ある程度の規模のプラグインで、複数のmikutterコマンドを提供する場合は、
+分かりやすいスラッグにしておきましょう。
+</p>
 
 <p>
-    の2つ方法で呼び出せるようにします。mikutterを使っていれば気づくか
-    と思いますが、右クリックメニューで選択できる項目はすべてショートカッ
-    トキーに割り当てることができます。これは、どちらも登録された
-    「mikutterコマンド」を参照しているからで、ここに一つ機能を追加する
-    ようにしておけば、ユーザは右クリックメニューから使ったり、ショート
-    カットキーに割り当てたり、好きに使うことができます。
+第二匹数は Hash を渡します。以下の様なキーがあります。
 </p>
-<ul>
-<li id="sec-5-2-2-1">commandメソッド<br/>
-<ul>
-<li id="sec-5-2-2-1-1">commandメソッドの引数<br/>
-      commandの第一引数には、コマンドの識別名(slug)を渡します。今回のプラグインのような、
-      コマンドを一つだけ提供するのが目的である場合は、プラグインスラッグと同じにする人が多いようです。
-      しかし、ある程度の規模のプラグインで、複数のmikutterコマンドを提供する場合は、
-      分かりやすいスラッグにしておきましょう。
 
-<p>
-      第二匹数は Hash を渡します。以下の様なキーがあります。
-</p>
-<ol>
+<ol class="org-ol">
 <li><b>name</b>
          表示名。コンテキストメニューに表示される内容。String。
-
 </li>
+
 <li><b>description</b>
          この機能の説明など。省略可能。
-
 </li>
+
 <li><b>icon</b>
-         アイコンがあれば。Gdk::PixbufとかString(ファイル名)を指定しましょう。
-         アイコンを指定しておくと、設定画面や右クリックメニューでそのアイコンが表示されます。
-         また、ツールバーには、アイコンがないと表示されません。
-
+アイコンがあれば。Gdk::PixbufとかString(ファイル名)を指定しましょう。
+アイコンを指定しておくと、設定画面や右クリックメニューでそのアイコンが表示されます。
+また、ツールバーには、アイコンがないと表示されません。
 </li>
+
 <li><b>condition</b>
          実行条件。これの値と===で引数（後述）が比較されます。引数にもよりますが、Proc、Regexp、Stringなどを指定できます。
-
 </li>
+
 <li><b>visible</b>
-         コンテキストメニューに表示するかどうかのフラグ。falseなら表示されない。
-         これは例えば、「ひとつ上のつぶやきを選択」のように、右クリックメニューに表示する必要のないものに使う。
-
+コンテキストメニューに表示するかどうかのフラグ。falseなら表示されない。
+これは例えば、「ひとつ上のつぶやきを選択」のように、右クリックメニューに表示する必要のないものに使う。
 </li>
+
 <li><b>role</b>
-         コマンドを実行できる環境。たとえば、タイムラインが右クリックすると、ここに <b>:timeline</b> が指定されていて、
-         かつ <b>:condition</b> がtrueなものだけが実行又はコンテキストメニューに表示される。指定できるもののバリエーションは後述。
+コマンドを実行できる環境。たとえば、タイムラインが右クリックすると、ここに <b>:timeline</b> が指定されていて、
+かつ <b>:condition</b> がtrueなものだけが実行又はコンテキストメニューに表示される。指定できるもののバリエーションは後述。
 </li>
 </ol>
 
-
 <p>
-      <b>role</b> と <b>condition</b> が条件を満たして、ユーザに入力によって実行されることになったら、
-      commandメソッドに渡したブロックが実行されます。ブロックは、 <b>condition</b> と同じ引数を受け取ります。
+<b>role</b> と <b>condition</b> が条件を満たして、ユーザに入力によって実行されることになったら、
+commandメソッドに渡したブロックが実行されます。ブロックは、 <b>condition</b> と同じ引数を受け取ります。
 </p>
+</div>
 </li>
-</ul>
-<ul>
-<li id="sec-5-2-2-1-2">コマンドロール<br/>
-      あるmikutterコマンドが実行できるウィジェットのことをロール(role)といいます。
-      タイムラインや、投稿ウィジェットなど、どこで呼び出されたら実行できるかを設定しておく必要があります。
 
-<ol>
+<li><a id="sec-5-2-2-1-2" name="sec-5-2-2-1-2"></a>コマンドロール<br  /><div class="outline-text-6" id="text-5-2-2-1-2">
+<p>
+あるmikutterコマンドが実行できるウィジェットのことをロール(role)といいます。
+タイムラインや、投稿ウィジェットなど、どこで呼び出されたら実行できるかを設定しておく必要があります。
+</p>
+
+<ol class="org-ol">
 <li>timeline
-<dl>
-<dt>右クリック</dt><dd>タイムラインを右クリックした時
+<dl class="org-dl">
+<dt> 右クリック </dt><dd>タイムラインを右クリックした時
 </dd>
-<dt>キーボード</dt><dd>タイムラインにフォーカスがあっている時
+<dt> キーボード </dt><dd>タイムラインにフォーカスがあっている時
 </dd>
 </dl>
-
-<p>         ツイートが表示されているタイムラインです。 <b>condition</b> の引数の :messages キーに、
-         選択されているすべてのツイートが配列で入ります。
-         TABキーなどでフォーカスインした時にショートカットキーを押す等、
-         ツイートが選択されずにコマンドが実行された場合は空の配列になります。
-</p>
 <p>
-         ツイートによって動作を変更するコマンドはこのロールです。ほとんどのコマンドは、
-         これを使うことになるでしょう。
+ツイートが表示されているタイムラインです。 <b>condition</b> の引数の :messages キーに、
+選択されているすべてのツイートが配列で入ります。
+TABキーなどでフォーカスインした時にショートカットキーを押す等、
+ツイートが選択されずにコマンドが実行された場合は空の配列になります。
+</p>
+
+<p>
+ツイートによって動作を変更するコマンドはこのロールです。ほとんどのコマンドは、
+これを使うことになるでしょう。
 </p>
 </li>
+
 <li>tab
-<dl>
-<dt>右クリック</dt><dd>タブバーのアイコンを右クリックした時
+<dl class="org-dl">
+<dt> 右クリック </dt><dd>タブバーのアイコンを右クリックした時
 </dd>
-<dt>キーボード</dt><dd>タイムラインなど、タブの子ウィジェットにフォーカスがあるとき
+<dt> キーボード </dt><dd>タイムラインなど、タブの子ウィジェットにフォーカスがあるとき
 </dd>
-<dt>ツールバー</dt><dd>タブの内部の一番上
+<dt> ツールバー </dt><dd>タブの内部の一番上
 </dd>
 </dl>
-
-<p>         タブです。timelineはツイートに対するコマンドという感じですが、tabはタブ全体に影響をおよぼすようなコマンドに使用します。
-</p>
 <p>
-         標準では、「タブを閉じる」や、「新規ペインへ移動」などがこのロールを使用しています。
+タブです。timelineはツイートに対するコマンドという感じですが、tabはタブ全体に影響をおよぼすようなコマンドに使用します。
+</p>
+
+<p>
+標準では、「タブを閉じる」や、「新規ペインへ移動」などがこのロールを使用しています。
 </p>
 </li>
+
 <li>pane
-<dl>
-<dt>右クリック</dt><dd>なし
+<dl class="org-dl">
+<dt> 右クリック </dt><dd>なし
 </dd>
-<dt>キーボード</dt><dd>ペインに所属するウィジェット(具体的にはタブ)にフォーカスがあるとき
+<dt> キーボード </dt><dd>ペインに所属するウィジェット(具体的にはタブ)にフォーカスがあるとき
 </dd>
 </dl>
-
-<p>         ペインです。ペインはいくつかのタブの集合体で、ウィンドウ内に横に並べられています。
-         アクティブなペインを操作するような、UI関連のコマンドでしか使わないでしょう。
-         最も使用頻度は低いと思われます。
-</p>
 <p>
-         標準では、「左(右)のペインを選択」で使われています。
+ペインです。ペインはいくつかのタブの集合体で、ウィンドウ内に横に並べられています。
+アクティブなペインを操作するような、UI関連のコマンドでしか使わないでしょう。
+最も使用頻度は低いと思われます。
+</p>
+
+<p>
+標準では、「左(右)のペインを選択」で使われています。
 </p>
 </li>
+
 <li>postbox
-<dl>
-<dt>右クリック</dt><dd>なし
+<dl class="org-dl">
+<dt> 右クリック </dt><dd>なし
 </dd>
-<dt>キーボード</dt><dd>Postbox上でキーボード入力をした時
-
+<dt> キーボード </dt><dd>Postbox上でキーボード入力をした時
 </dd>
 </dl>
-
-<p>         Postbox(ツイート投稿ウィジェット)です。ユーザがキーをタイプするたびにコマンドを実行します。
-         一つ注意することは、実行するコマンドがあれば、タイプされた文字は入力されないということです。
-         例えば、fに「カーソルを右へ移動」のような機能を割り当てると、fを入力できなくなります。
-         このことによって、Enterに投稿を割り当てることもできます。
-</p>
 <p>
-         標準では、「投稿する」で使われています。
+Postbox(ツイート投稿ウィジェット)です。ユーザがキーをタイプするたびにコマンドを実行します。
+一つ注意することは、実行するコマンドがあれば、タイプされた文字は入力されないということです。
+例えば、fに「カーソルを右へ移動」のような機能を割り当てると、fを入力できなくなります。
+このことによって、Enterに投稿を割り当てることもできます。
+</p>
+
+<p>
+標準では、「投稿する」で使われています。
 </p>
 </li>
+
 <li>window
-<dl>
-<dt>右クリック</dt><dd>なし
+<dl class="org-dl">
+<dt> 右クリック </dt><dd>なし
 </dd>
-<dt>キーボード</dt><dd>mikutterのウィンドウがアクティブなとき
+<dt> キーボード </dt><dd>mikutterのウィンドウがアクティブなとき
 </dd>
-<dt>ツールバー</dt><dd>ステータスバーの右下
+<dt> ツールバー </dt><dd>ステータスバーの右下
 </dd>
 </dl>
-
-<p>         ウィンドウです。どこでも実行できるようなコマンドに設定します。
-</p>
 <p>
-         今後、「設定」や「コンソールを開く」などが、このロールを使う予定です。
-</p></li>
+ウィンドウです。どこでも実行できるようなコマンドに設定します。
+</p>
+
+<p>
+今後、「設定」や「コンソールを開く」などが、このロールを使う予定です。
+</p>
+</li>
 </ol>
 
-
 <p>
-      実は、この他にもプロフィール関連のロールがあるのですが、それはプロフィール拡張プラグインを書くときに説明したいと思います。
+実は、この他にもプロフィール関連のロールがあるのですが、それはプロフィール拡張プラグインを書くときに説明したいと思います。
 </p>
+</div>
 </li>
-</ul>
-<ul>
-<li id="sec-5-2-2-1-3">コールバックの引数<br/>
-      <b>condition</b> に指定された無名関数や実行ブロックには、以下の様な構造体が渡されます。
 
+<li><a id="sec-5-2-2-1-3" name="sec-5-2-2-1-3"></a>コールバックの引数<br  /><div class="outline-text-6" id="text-5-2-2-1-3">
+<p>
+<b>condition</b> に指定された無名関数や実行ブロックには、以下の様な構造体が渡されます。
+</p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby"><span style="color: #1f5bff;">Plugin</span>::<span style="color: #1f5bff;">GUI</span>::<span style="color: #1f5bff;">Event</span> = <span style="color: #1f5bff;">Struct</span>.new(<span style="color: #1f5bff;">:event</span>, <span style="color: #1f5bff;">:widget</span>, <span style="color: #1f5bff;">:messages</span>)
+<pre class="src src-ruby"><span style="color: #00d7af;">Plugin</span>::<span style="color: #00d7af;">GUI</span>::<span style="color: #00d7af;">Event</span> = <span style="color: #00d7af;">Struct</span>.new(<span style="color: #5fafd7;">:event</span>, <span style="color: #5fafd7;">:widget</span>, <span style="color: #5fafd7;">:messages</span>)
 </pre>
+</div>
 
-
-<dl>
-<dt>:event</dt><dd>イベント呼び出し元。標準では、 :keyboard か :contextmenu か :toolbar
+<dl class="org-dl">
+<dt> :event </dt><dd>イベント呼び出し元。標準では、 :keyboard か :contextmenu か :toolbar
 </dd>
-<dt>:widget</dt><dd>入力を受け取ったウィジェット。例えばtimelineロールなら必ずタイムラインのインスタンス。
+<dt> :widget </dt><dd>入力を受け取ったウィジェット。例えばtimelineロールなら必ずタイムラインのインスタンス。
 </dd>
-<dt>:messages</dt><dd>タイムラインに入力があった場合、イベントが発生した時選択されていたツイート。
-                     複数選択されていることがあるので、1つしか選択されてなくても配列。
-                     何も選択されてなければ空の配列。
+<dt> :messages </dt><dd>タイムラインに入力があった場合、イベントが発生した時選択されていたツイート。
+複数選択されていることがあるので、1つしか選択されてなくても配列。
+何も選択されてなければ空の配列。
 </dd>
 </dl>
-
-
-</li>
-</ul>
-</li>
-</ul>
+</div>
+</li></ol>
+</li></ol>
 </div>
 </div>
 </div>
 
-</div>
-
-<div id="outline-container-6" class="outline-2">
+<div id="outline-container-sec-6" class="outline-2">
 <h2 id="sec-6"><span class="section-number-2">6</span> システムメッセージの利用</h2>
 <div class="outline-text-2" id="text-6">
-
-<p>  mikutterを使っていると、mikutter_botというアカウントのツイートとしてシステムメッセージがホームTLに入ることがあります。
-  このセクションでは、このメッセージを使って、ユーザに情報を提示する方法について学習します。
+<p>
+mikutterを使っていると、mikutter_botというアカウントのツイートとしてシステムメッセージがホームTLに入ることがあります。
+このセクションでは、このメッセージを使って、ユーザに情報を提示する方法について学習します。
 </p>
-
 </div>
 
-<div id="outline-container-6-1" class="outline-3">
+<div id="outline-container-sec-6-1" class="outline-3">
 <h3 id="sec-6-1"><span class="section-number-3">6.1</span> コード</h3>
 <div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
 
+<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
 
+<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:time_signal</span>) <span style="color: #a1db00;">do</span>
 
+  defactivity <span style="color: #ff4ea3;">"hour_signal"</span>, <span style="color: #ff4ea3;">"&#26178;&#22577;"</span>
 
-<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
+  now = <span style="color: #00d7af;">Time</span>.new
+  time = <span style="color: #00d7af;">Time</span>.mktime now.year, now.mon, now.day, now.hour
 
-<span style="color: #1f5bff;">Plugin</span>.create(<span style="color: #1f5bff;">:time_signal</span>) <span style="color: #00af00;">do</span>
-
-  defactivity <span style="color: #ff1f8b;">"hour_signal"</span>, <span style="color: #ff1f8b;">"&#26178;&#22577;"</span>
-
-  now = <span style="color: #1f5bff;">Time</span>.new
-  time = <span style="color: #1f5bff;">Time</span>.mktime now.year, now.mon, now.day, now.hour
-
-  <span style="color: #00af00;">def</span> <span style="color: #ff8700;">next_hour</span>(time)
+  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">next_hour</span>(time)
     time += 3600
-    notice <span style="color: #ff1f8b;">"next hour</span><span style="color: #ff8700;"> #{time}</span><span style="color: #ff1f8b;">"</span>
-    <span style="color: #1f5bff;">Reserver</span>.new(time) {
-      activity <span style="color: #1f5bff;">:hour_signal</span>, <span style="color: #ff8700;">"#{time.hour}</span><span style="color: #ff1f8b;"> &#26178;&#12391;&#12377;"</span>
+    notice <span style="color: #ff4ea3;">"next hour </span><span style="color: #ff8700;">#{time}</span><span style="color: #ff4ea3;">"</span>
+    <span style="color: #00d7af;">Reserver</span>.new(time) {
+      activity <span style="color: #5fafd7;">:hour_signal</span>, <span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff4ea3;"> &#26178;&#12391;&#12377;"</span>
       next_hour(time)
     }
-  <span style="color: #00af00;">end</span>
+  <span style="color: #a1db00;">end</span>
   next_hour(time)
-<span style="color: #00af00;">end</span>
-
+<span style="color: #a1db00;">end</span>
 </pre>
-
 </div>
-
 </div>
-
-<div id="outline-container-6-2" class="outline-3">
+</div>
+<div id="outline-container-sec-6-2" class="outline-3">
 <h3 id="sec-6-2"><span class="section-number-3">6.2</span> 解説</h3>
 <div class="outline-text-3" id="text-6-2">
-
-
-</div>
-
-<div id="outline-container-6-2-1" class="outline-4">
+</div><div id="outline-container-sec-6-2-1" class="outline-4">
 <h4 id="sec-6-2-1"><span class="section-number-4">6.2.1</span> アクティビティとは</h4>
 <div class="outline-text-4" id="text-6-2-1">
+<p>
+アクティビティは、mikutter 0.2から追加された仕組みで、mikutter上やTwitter上で起こった通知情報を統合管理する仕組みです。
+</p>
 
-<p>    アクティビティは、mikutter 0.2から追加された仕組みで、mikutter上やTwitter上で起こった通知情報を統合管理する仕組みです。
-</p>
-<p>
-    <img src="activity.png"  alt="activity.png" />
-</p>
-<p>
-    まず、何らかのプラグインがactivityメソッドを使って通知を発生させます。その通知はactivityプラグインが受け取り、 <b>:modify_activity</b> というイベントを発生させます。このイベントを受け取って、ホームTLやアクティビティタブに通知が表示されるのです。
-    アクティビティとアクティビティタブは異なります。アクティビティは通知の仕組みのことで、アクティビティタブは表示手段の一つです（上の図を参照してください）。
+
+<div class="figure">
+<p><img src="activity.png" alt="activity.png" />
 </p>
 </div>
 
+<p>
+まず、何らかのプラグインがactivityメソッドを使って通知を発生させます。その通知はactivityプラグインが受け取り、 <b>:modify_activity</b> というイベントを発生させます。このイベントを受け取って、ホームTLやアクティビティタブに通知が表示されるのです。
+アクティビティとアクティビティタブは異なります。アクティビティは通知の仕組みのことで、アクティビティタブは表示手段の一つです（上の図を参照してください）。
+</p>
+</div>
 </div>
 
-<div id="outline-container-6-2-2" class="outline-4">
+<div id="outline-container-sec-6-2-2" class="outline-4">
 <h4 id="sec-6-2-2"><span class="section-number-4">6.2.2</span> 通知の種類</h4>
 <div class="outline-text-4" id="text-6-2-2">
-
-<p>    通知には、お気に入り、DM、エラー通知といった種類があります。今回は時報のための <b>hour_signal</b> という種類を新しく定義しています。
+<p>
+通知には、お気に入り、DM、エラー通知といった種類があります。今回は時報のための <b>hour_signal</b> という種類を新しく定義しています。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">defactivity <span style="color: #ff1f8b;">"hour_signal"</span>, <span style="color: #ff1f8b;">"&#26178;&#22577;"</span>
+<pre class="src src-ruby">defactivity <span style="color: #ff4ea3;">"hour_signal"</span>, <span style="color: #ff4ea3;">"&#26178;&#22577;"</span>
 </pre>
-
+</div>
 
 <p>
-    とはいっても、普通は最初から用意されている system という種類の通知を使うので、その場合は <b>defactivity</b> を使う必要はないです。
+とはいっても、普通は最初から用意されている system という種類の通知を使うので、その場合は <b>defactivity</b> を使う必要はないです。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-6-2-3" class="outline-4">
+<div id="outline-container-sec-6-2-3" class="outline-4">
 <h4 id="sec-6-2-3"><span class="section-number-4">6.2.3</span> 実際に通知を発生させる</h4>
 <div class="outline-text-4" id="text-6-2-3">
-
-<p>    通知を発生させるのはごく簡単です。例のコードでは、以下の部分です。
+<p>
+通知を発生させるのはごく簡単です。例のコードでは、以下の部分です。
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-ruby">activity <span style="color: #1f5bff;">:hour_signal</span>, <span style="color: #ff8700;">"#{time.hour}</span><span style="color: #ff1f8b;"> &#26178;&#12391;&#12377;"</span>
+<pre class="src src-ruby">activity <span style="color: #5fafd7;">:hour_signal</span>, <span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff4ea3;"> &#26178;&#12391;&#12377;"</span>
 </pre>
-
+</div>
 
 <p>
-    これで、「x 時です」と、毎時0分に通知されるようになります。しかしこのプラグインを実際に使うと、タイムラインには表示されず、アクティビティタブにしか表示されません。理由は簡単で、「設定」の「アクティビティ」で、時報をTLに表示する設定がデフォルトで無効になっているからです。設定でこのチェックを入れるとTLに表示されるようになります。
+これで、「x 時です」と、毎時0分に通知されるようになります。しかしこのプラグインを実際に使うと、タイムラインには表示されず、アクティビティタブにしか表示されません。理由は簡単で、「設定」の「アクティビティ」で、時報をTLに表示する設定がデフォルトで無効になっているからです。設定でこのチェックを入れるとTLに表示されるようになります。
 </p>
+
 <p>
-    どうしてもホームTLに表示したい場合があるでしょう。その場合、Plugin.callで無理やりシステムメッセージを挿入する古い方法の代わりに、 <b>system</b> 通知を使いましょう。これは、種類を分けるまでもない一般的なシステムメッセージのために予約されており、デフォルトでTLに表示されるようになっています。もちろんユーザがTLに表示しないように設定できるので、プラグインがアクティビティの仕組みを使えば、ユーザは通知をミュートすることができます。
+どうしてもホームTLに表示したい場合があるでしょう。その場合、Plugin.callで無理やりシステムメッセージを挿入する古い方法の代わりに、 <b>system</b> 通知を使いましょう。これは、種類を分けるまでもない一般的なシステムメッセージのために予約されており、デフォルトでTLに表示されるようになっています。もちろんユーザがTLに表示しないように設定できるので、プラグインがアクティビティの仕組みを使えば、ユーザは通知をミュートすることができます。
 </p>
 </div>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-7" class="outline-2">
+<div id="outline-container-sec-7" class="outline-2">
 <h2 id="sec-7"><span class="section-number-2">7</span> 終わりに</h2>
 <div class="outline-text-2" id="text-7">
-
-<p>   mikutterは、ほとんどすべての機能がプラグインで実装されていることからも分かる通り、プラグインで柔軟に機能が追加できるようになっています。
-   今回は、いくつかの簡単なプラグインを実装する方法を紹介しました。これらを組み合わせれば、ある程度いろんなプラグインを作成できるでしょう。
+<p>
+mikutterは、ほとんどすべての機能がプラグインで実装されていることからも分かる通り、プラグインで柔軟に機能が追加できるようになっています。
+今回は、いくつかの簡単なプラグインを実装する方法を紹介しました。これらを組み合わせれば、ある程度いろんなプラグインを作成できるでしょう。
 </p>
-
 </div>
 
-<div id="outline-container-7-1" class="outline-3">
+<div id="outline-container-sec-7-1" class="outline-3">
 <h3 id="sec-7-1"><span class="section-number-3">7.1</span> プラグインを公開する</h3>
 <div class="outline-text-3" id="text-7-1">
+<p>
+作ったプラグインを公開すれば、他の人がmikutterでその機能を利用できるようになります。mikutterでは、githubにプラグインを公開することを推奨しており、現に多くのプラグインはgithubに公開されています。
+</p>
 
-<p>   作ったプラグインを公開すれば、他の人がmikutterでその機能を利用できるようになります。mikutterでは、githubにプラグインを公開することを推奨しており、現に多くのプラグインはgithubに公開されています。
-</p>
 <p>
-   プラグインを管理するプラグインも現在開発が進んでいます。<a href="https://github.com/toshia/mikustore">みっくストア</a> です。これはまだ始まったばかりのプロジェクトで十分な機能はありませんが、うまく行けばmikutter上でプラグインのダウンロード・インストールが可能になるでしょう。現在既に、自分のストアを公開できるようになっています。
+プラグインを管理するプラグインも現在開発が進んでいます。<a href="https://github.com/toshia/mikustore">みっくストア</a> です。これはまだ始まったばかりのプロジェクトで十分な機能はありませんが、うまく行けばmikutter上でプラグインのダウンロード・インストールが可能になるでしょう。現在既に、自分のストアを公開できるようになっています。
 </p>
+
 <p>
-   また、<a href="http://yuzuki.hachune.net/wiki/FrontPage">mikutter wiki</a>にもあなたの公開したプラグインを掲載してみましょう。mikutter wikiは、現在唯一機能しているプラグインリストです。githubだけでは、mikutterプラグインをだらだら眺めることができないので、気づいてもらえないかもしれません。
+また、<a href="http://yuzuki.hachune.net/wiki/FrontPage">mikutter wiki</a>にもあなたの公開したプラグインを掲載してみましょう。mikutter wikiは、現在唯一機能しているプラグインリストです。githubだけでは、mikutterプラグインをだらだら眺めることができないので、気づいてもらえないかもしれません。
 </p>
 </div>
-
 </div>
 
-<div id="outline-container-7-2" class="outline-3">
+<div id="outline-container-sec-7-2" class="outline-3">
 <h3 id="sec-7-2"><span class="section-number-3">7.2</span> 他のドキュメント</h3>
 <div class="outline-text-3" id="text-7-2">
-
-<p>   mikutterは常に進化しており、このドキュメントも追随はしていますが、個々に書いていることが全てではありません。最後に、プラグインを書く上で参考になる資料をいくつか紹介しておきます。
+<p>
+mikutterは常に進化しており、このドキュメントも追随はしていますが、個々に書いていることが全てではありません。最後に、プラグインを書く上で参考になる資料をいくつか紹介しておきます。
 </p>
-<dl>
-<dt><a href="http://mikutter.blogspot.com/">mikutter開発日記</a></dt><dd>最近の変化について書いているので、最新の情報を追いかけるなら、最低限これだけみておけば大丈夫です。
+
+<dl class="org-dl">
+<dt> <a href="http://mikutter.blogspot.com/">mikutter開発日記</a> </dt><dd>最近の変化について書いているので、最新の情報を追いかけるなら、最低限これだけみておけば大丈夫です。
 </dd>
-<dt><a href="http://mikutter.hachune.net/rdoc/index.html">RDoc</a></dt><dd>どういったクラスやメソッドが使用できるか確認することができます。完璧ではありませんが、主要なものや最近書かれたものについては、ドキュメントが存在します。
+<dt> <a href="http://mikutter.hachune.net/rdoc/index.html">RDoc</a> </dt><dd>どういったクラスやメソッドが使用できるか確認することができます。完璧ではありませんが、主要なものや最近書かれたものについては、ドキュメントが存在します。
 </dd>
-<dt><a href="http://dev.mikutter.hachune.net/">Redmine</a></dt><dd>開発の進捗を見ることができます。また、あなたが発見したバグを報告し、開発に関わることもできます。
+<dt> <a href="http://dev.mikutter.hachune.net/">Redmine</a> </dt><dd>開発の進捗を見ることができます。また、あなたが発見したバグを報告し、開発に関わることもできます。
 </dd>
 </dl>
-
 
 <p>
-   最後に、「Writing mikutter plugin」の最新版は、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> に公開されています。
-   最新バージョンに対応していますし、冒頭にも書いたとおり、サンプルコードを取得することも出来ます。
+最後に、「Writing mikutter plugin」の最新版は、 <a href="https://github.com/toshia/writing-mikutter-plugin">https://github.com/toshia/writing-mikutter-plugin</a> に公開されています。
+最新バージョンに対応していますし、冒頭にも書いたとおり、サンプルコードを取得することも出来ます。
 </p>
 </div>
 </div>
-
 </div>
 
-<div id="outline-container-8" class="outline-2">
+<div id="outline-container-sec-8" class="outline-2">
 <h2 id="sec-8"><span class="section-number-2">8</span> 付録</h2>
 <div class="outline-text-2" id="text-8">
-
-<dl>
-<dt><a href="./event.html">Events and Filters</a></dt><dd>mikutterのイベント一覧です
+<dl class="org-dl">
+<dt> <a href="./event.html">Events and Filters</a> </dt><dd>mikutterのイベント一覧です
 </dd>
 </dl>
-
 </div>
 </div>
 </div>
-
-<div id="postamble">
-<p class="date">Date: </p>
+<div id="postamble" class="status">
 <p class="author">Author: @toshi_a</p>
-<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
-<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
-
+<p class="date">Created: 2015-06-10 水 01:48</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>
