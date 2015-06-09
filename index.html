@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Writing mikutter plugin</title>
-<!-- 2015-06-10 水 01:48 -->
+<!-- 2015-06-10 水 01:50 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="@toshi_aa" />
@@ -298,11 +298,11 @@ $ mikutter.rb generate test_plugin
 
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:test_plugin</span>) <span style="color: #a1db00;">do</span>
+<span style="color: #5fafd7;">Plugin</span>.create(<span style="color: #1f5bff;">:test_plugin</span>) <span style="color: #00af00;">do</span>
 
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -326,13 +326,13 @@ test_pluginは何も内容がないので、specファイルも見所があり�
 
 <div class="org-src-container">
 
-<pre class="src src-yaml"><span style="color: #6c6c6c; font-style: italic;">---</span>
+<pre class="src src-yaml"><span style="color: #b2b2b2; font-style: italic;">---</span>
 <span style="color: #ff8700;">slug</span>: :mikustore
 <span style="color: #ff8700;">depends</span>:
   <span style="color: #ff8700;">mikutter</span>: 0.2.0.1051
   <span style="color: #ff8700;">plugin</span>:
   - settings
-<span style="color: #ff8700;">version</span>: <span style="color: #ff4ea3;">'0.1'</span>
+<span style="color: #ff8700;">version</span>: <span style="color: #ff1f8b;">'0.1'</span>
 <span style="color: #ff8700;">author</span>: toshi_a
 <span style="color: #ff8700;">name</span>: &#12415;&#12387;&#12367;&#12473;&#12488;&#12450;
 <span style="color: #ff8700;">description</span>: mikutter&#12395;&#12503;&#12521;&#12464;&#12452;&#12531;&#12398;&#12497;&#12483;&#12465;&#12540;&#12472;&#31649;&#29702;&#27231;&#33021;&#12434;&#36861;&#21152;&#12375;&#12414;&#12377;&#12290;&#12415;&#12387;&#12367;&#12473;&#12488;&#12450;&#12395;&#30331;&#37682;&#12373;&#12428;&#12390;&#12356;&#12427;&#12503;&#12521;&#12464;&#12452;&#12531;&#12399;&#12463;&#12522;&#12483;&#12463;&#12384;&#12369;&#12391;&#12480;&#12454;&#12531;&#12525;&#12540;&#12489;&#12391;&#12365;&#12414;&#12377;&#65281;
@@ -368,32 +368,32 @@ test_pluginは何も内容がないので、specファイルも見所があり�
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
-<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">say "&#12424;&#12427;&#12411;&#12540;"</span>
-<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12398;&#20363;&#12391;&#12377;&#12290;&#12354;&#12367;&#12414;&#12391;Reserver&#12398;&#12487;&#12514;&#12531;&#12473;&#12488;&#12524;&#12540;&#12471;&#12519;&#12531;&#29992;&#12395;&#20316;&#12426;&#12414;&#12375;&#12383;&#12290;</span>
-<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12394;&#12398;&#12391;&#23455;&#25126;&#25237;&#20837;&#12399;&#12375;&#12394;&#12356;&#12371;&#12392;&#12290;&#12424;&#12427;&#12411;&#12540;&#12399;&#33258;&#20998;&#12391;&#12479;&#12452;&#12511;&#12531;&#12464;&#12434;&#21512;&#12431;&#12379;&#12427;&#12371;&#12392;&#12395;&#12371;&#12381;&#24847;&#32681;&#12364;&#12354;&#12427;&#12398;&#12391;&#12377;&#12290;</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">say "&#12424;&#12427;&#12411;&#12540;"</span>
+<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12398;&#20363;&#12391;&#12377;&#12290;&#12354;&#12367;&#12414;&#12391;Reserver&#12398;&#12487;&#12514;&#12531;&#12473;&#12488;&#12524;&#12540;&#12471;&#12519;&#12531;&#29992;&#12395;&#20316;&#12426;&#12414;&#12375;&#12383;&#12290;</span>
+<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12394;&#12398;&#12391;&#23455;&#25126;&#25237;&#20837;&#12399;&#12375;&#12394;&#12356;&#12371;&#12392;&#12290;&#12424;&#12427;&#12411;&#12540;&#12399;&#33258;&#20998;&#12391;&#12479;&#12452;&#12511;&#12531;&#12464;&#12434;&#21512;&#12431;&#12379;&#12427;&#12371;&#12392;&#12395;&#12371;&#12381;&#24847;&#32681;&#12364;&#12354;&#12427;&#12398;&#12391;&#12377;&#12290;</span>
 
-<span style="color: #00d7af;">Plugin</span>.create <span style="color: #5fafd7;">:yoruho</span> <span style="color: #a1db00;">do</span>
-  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">main</span>
-    <span style="color: #00d7af;">Reserver</span>.new(nextyrhtime){
-      say_yoruho(<span style="color: #00d7af;">Service</span>.primary)
-      <span style="color: #d18aff;">sleep</span> 1
-      main } <span style="color: #a1db00;">end</span>
+<span style="color: #5fafd7;">Plugin</span>.create <span style="color: #1f5bff;">:yoruho</span> <span style="color: #00af00;">do</span>
+  <span style="color: #00af00;">def</span> <span style="color: #ef2929;">main</span>
+    <span style="color: #5fafd7;">Reserver</span>.new(nextyrhtime){
+      say_yoruho(<span style="color: #5fafd7;">Service</span>.primary)
+      <span style="color: #9a08ff;">sleep</span> 1
+      main } <span style="color: #00af00;">end</span>
 
-  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#27425;&#22238;&#12398;&#12424;&#12427;&#12411;&#12540;&#26178;&#38291;&#12434;&#21462;&#24471;</span>
-  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">nextyrhtime</span>
-    now = <span style="color: #00d7af;">Time</span>.new
-    result = <span style="color: #00d7af;">Time</span>.local(now.year, now.month, now.day, 0, 0)
-    <span style="color: #a1db00;">while</span> result &lt; now
-      result += 86400 <span style="color: #a1db00;">end</span>
-    result <span style="color: #a1db00;">end</span>
+  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#27425;&#22238;&#12398;&#12424;&#12427;&#12411;&#12540;&#26178;&#38291;&#12434;&#21462;&#24471;</span>
+  <span style="color: #00af00;">def</span> <span style="color: #ef2929;">nextyrhtime</span>
+    now = <span style="color: #5fafd7;">Time</span>.new
+    result = <span style="color: #5fafd7;">Time</span>.local(now.year, now.month, now.day, 0, 0)
+    <span style="color: #00af00;">while</span> result &lt; now
+      result += 86400 <span style="color: #00af00;">end</span>
+    result <span style="color: #00af00;">end</span>
 
-  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12392;&#12388;&#12406;&#12420;&#12367;</span>
-  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">say_yoruho</span>(service)
-    service.update(<span style="color: #5fafd7;">message</span>: <span style="color: #ff4ea3;">'&#12390;&#12362;&#12411;&#12540;'</span>) <span style="color: #a1db00;">end</span>
+  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12424;&#12427;&#12411;&#12540;&#12392;&#12388;&#12406;&#12420;&#12367;</span>
+  <span style="color: #00af00;">def</span> <span style="color: #ef2929;">say_yoruho</span>(service)
+    service.update(<span style="color: #1f5bff;">message</span>: <span style="color: #ff1f8b;">'&#12390;&#12362;&#12411;&#12540;'</span>) <span style="color: #00af00;">end</span>
 
   main
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -554,33 +554,33 @@ Reserverは特定の時間に処理を実行するためのクラスです。
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
-<span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">mikutter&#12395;&#12388;&#12356;&#12390;&#12501;&#12457;&#12525;&#12452;&#12540;&#12364;&#35328;&#21450;&#12375;&#12383;&#12425;&#12289;&#12375;&#12400;&#12425;&#12367;TL&#12395;&#20837;&#12428;&#12427;</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
+<span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">mikutter&#12395;&#12388;&#12356;&#12390;&#12501;&#12457;&#12525;&#12452;&#12540;&#12364;&#35328;&#21450;&#12375;&#12383;&#12425;&#12289;&#12375;&#12400;&#12425;&#12367;TL&#12395;&#20837;&#12428;&#12427;</span>
 
-<span style="color: #00d7af;">Plugin</span>.create <span style="color: #5fafd7;">:gossip_detector</span> <span style="color: #a1db00;">do</span>
+<span style="color: #5fafd7;">Plugin</span>.create <span style="color: #1f5bff;">:gossip_detector</span> <span style="color: #00af00;">do</span>
 
-  <span style="color: #00d7af;">EXPIRE</span> = 300                  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">5 min</span>
+  <span style="color: #5fafd7;">EXPIRE</span> = 300                  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">5 min</span>
 
   gossip_users = {}
 
-  tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">'Gossip Detector'</span> <span style="color: #a1db00;">do</span>
-    set_icon <span style="color: #00d7af;">MUI</span>::<span style="color: #00d7af;">Skin</span>.get(<span style="color: #ff4ea3;">"timeline.png"</span>)
-    timeline <span style="color: #5fafd7;">:gossip_detector</span>
-  <span style="color: #a1db00;">end</span>
+  tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">'Gossip Detector'</span> <span style="color: #00af00;">do</span>
+    set_icon <span style="color: #5fafd7;">MUI</span>::<span style="color: #5fafd7;">Skin</span>.get(<span style="color: #ff1f8b;">"timeline.png"</span>)
+    timeline <span style="color: #1f5bff;">:gossip_detector</span>
+  <span style="color: #00af00;">end</span>
 
-  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12484;&#12452;&#12540;&#12488;&#12398;&#21463;&#20449;&#12289;&#25391;&#12426;&#20998;&#12369;</span>
-  onupdate <span style="color: #a1db00;">do</span> |service, messages|
-    timeline(<span style="color: #5fafd7;">:gossip_detector</span>) &lt;&lt; message.select { |m|
-      <span style="color: #a1db00;">if</span> m.to_s =~ <span style="color: #ff4ea3;">/mikutter|&#12415;&#12367;&#12387;&#12383;/</span>
-        gossip_users[m.user] = <span style="color: #00d7af;">Time</span>.now + <span style="color: #00d7af;">EXPIRE</span>
-        <span style="color: #5fafd7;">true</span>
-      <span style="color: #a1db00;">else</span>
-        gossip_users.has_key?(m.user) <span style="color: #a1db00;">and</span> gossip_users[m.user] &gt; m[<span style="color: #5fafd7;">:created</span>]
-      <span style="color: #a1db00;">end</span>
+  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12484;&#12452;&#12540;&#12488;&#12398;&#21463;&#20449;&#12289;&#25391;&#12426;&#20998;&#12369;</span>
+  onupdate <span style="color: #00af00;">do</span> |service, messages|
+    timeline(<span style="color: #1f5bff;">:gossip_detector</span>) &lt;&lt; message.select { |m|
+      <span style="color: #00af00;">if</span> m.to_s =~ <span style="color: #ff1f8b;">/mikutter|&#12415;&#12367;&#12387;&#12383;/</span>
+        gossip_users[m.user] = <span style="color: #5fafd7;">Time</span>.now + <span style="color: #5fafd7;">EXPIRE</span>
+        <span style="color: #1f5bff;">true</span>
+      <span style="color: #00af00;">else</span>
+        gossip_users.has_key?(m.user) <span style="color: #00af00;">and</span> gossip_users[m.user] &gt; m[<span style="color: #1f5bff;">:created</span>]
+      <span style="color: #00af00;">end</span>
     }
-  <span style="color: #a1db00;">end</span>
+  <span style="color: #00af00;">end</span>
 
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -614,9 +614,9 @@ Plugin.create のブロック内に、以下のように書けば、イベント
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">onevent <span style="color: #a1db00;">do</span> |params|
-  <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#20966;&#29702;</span>
-<span style="color: #a1db00;">end</span>
+<pre class="src src-ruby">onevent <span style="color: #00af00;">do</span> |params|
+  <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#20966;&#29702;</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 
@@ -641,7 +641,7 @@ UIの定義を見てみましょう。このプラグインは、一つのタブ
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">"Gossip Detector"</span>
+<pre class="src src-ruby">tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">"Gossip Detector"</span>
 </pre>
 </div>
 
@@ -651,10 +651,10 @@ UIの定義を見てみましょう。このプラグインは、一つのタブ
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">tab <span style="color: #5fafd7;">:gossip_detector</span>, <span style="color: #ff4ea3;">'Gossip Detector'</span> <span style="color: #a1db00;">do</span>
-  set_icon <span style="color: #00d7af;">MUI</span>::<span style="color: #00d7af;">Skin</span>.get(<span style="color: #ff4ea3;">"timeline.png"</span>)
-  timeline <span style="color: #5fafd7;">:gossip_detector</span>
-<span style="color: #a1db00;">end</span>
+<pre class="src src-ruby">tab <span style="color: #1f5bff;">:gossip_detector</span>, <span style="color: #ff1f8b;">'Gossip Detector'</span> <span style="color: #00af00;">do</span>
+  set_icon <span style="color: #5fafd7;">MUI</span>::<span style="color: #5fafd7;">Skin</span>.get(<span style="color: #ff1f8b;">"timeline.png"</span>)
+  timeline <span style="color: #1f5bff;">:gossip_detector</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 
@@ -672,7 +672,7 @@ UIの定義を見てみましょう。このプラグインは、一つのタブ
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">timeline(<span style="color: #5fafd7;">:gossip_detector</span>) &lt;&lt; <span style="color: #00d7af;">Message</span>
+<pre class="src src-ruby">timeline(<span style="color: #1f5bff;">:gossip_detector</span>) &lt;&lt; <span style="color: #5fafd7;">Message</span>
 </pre>
 </div>
 
@@ -727,18 +727,18 @@ mikutter標準のミュート機能は、すべてのタイムラインからツ
 </p>
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:mute_word</span>) <span style="color: #a1db00;">do</span>
+<span style="color: #5fafd7;">Plugin</span>.create(<span style="color: #1f5bff;">:mute_word</span>) <span style="color: #00af00;">do</span>
 
-  exclude_words = [<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>,<span style="color: #ff4ea3;">"&#21407;&#30330;"</span>] <span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">&#12501;&#12451;&#12523;&#12479;&#12377;&#12427;&#21336;&#35486;</span>
+  exclude_words = [<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>,<span style="color: #ff1f8b;">"&#21407;&#30330;"</span>] <span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">&#12501;&#12451;&#12523;&#12479;&#12377;&#12427;&#21336;&#35486;</span>
 
-  filter_show_filter <span style="color: #a1db00;">do</span> |msgs|
-    msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> exclude_words.any?{ |word| m.to_s.include?(word) } }
+  filter_show_filter <span style="color: #00af00;">do</span> |msgs|
+    msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> exclude_words.any?{ |word| m.to_s.include?(word) } }
     [msgs]
-  <span style="color: #a1db00;">end</span>
+  <span style="color: #00af00;">end</span>
 
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -761,10 +761,10 @@ mikutter標準のミュート機能は、すべてのタイムラインからツ
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">filter_update <span style="color: #a1db00;">do</span> |service, msgs|
-  msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> m.to_s.include?(<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>) }
+<pre class="src src-ruby">filter_update <span style="color: #00af00;">do</span> |service, msgs|
+  msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> m.to_s.include?(<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>) }
   [service, msgs]
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 
@@ -822,9 +822,9 @@ Plugin.filtering(:update, Post.primary_service, [Instance of Messages...])
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">filter_plus <span style="color: #a1db00;">do</span> |num|
+<pre class="src src-ruby">filter_plus <span style="color: #00af00;">do</span> |num|
   [num + 1]
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 
@@ -860,10 +860,10 @@ Plugin.filtering(:show_filter, message)
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">filter_show_filter <span style="color: #a1db00;">do</span> |msgs|
-  msgs = msgs.select{ |m| <span style="color: #a1db00;">not</span> m.to_s.include?(<span style="color: #ff4ea3;">"&#25919;&#27835;"</span>) }
+<pre class="src src-ruby">filter_show_filter <span style="color: #00af00;">do</span> |msgs|
+  msgs = msgs.select{ |m| <span style="color: #00af00;">not</span> m.to_s.include?(<span style="color: #ff1f8b;">"&#25919;&#27835;"</span>) }
   [msgs]
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 
@@ -919,21 +919,21 @@ STOT(ShareTwitterOnTumblr)は、ツイートをTumblrに投稿するためのフ
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:copy_as_stot</span>) <span style="color: #a1db00;">do</span>
+<span style="color: #5fafd7;">Plugin</span>.create(<span style="color: #1f5bff;">:copy_as_stot</span>) <span style="color: #00af00;">do</span>
 
-  command(<span style="color: #5fafd7;">:copy_as_stot</span>,
-    <span style="color: #5fafd7;">name</span>: <span style="color: #ff4ea3;">'STOT&#24418;&#24335;&#12391;&#12467;&#12500;&#12540;'</span>,
-    <span style="color: #5fafd7;">condition</span>: <span style="color: #00d7af;">Plugin</span>::<span style="color: #00d7af;">Command</span>[<span style="color: #5fafd7;">:HasOneMessage</span>],
-    <span style="color: #5fafd7;">visible</span>: <span style="color: #5fafd7;">true</span>,
-    <span style="color: #5fafd7;">role</span>: <span style="color: #5fafd7;">:timeline</span>) <span style="color: #a1db00;">do</span> |opt|
+  command(<span style="color: #1f5bff;">:copy_as_stot</span>,
+    <span style="color: #1f5bff;">name</span>: <span style="color: #ff1f8b;">'STOT&#24418;&#24335;&#12391;&#12467;&#12500;&#12540;'</span>,
+    <span style="color: #1f5bff;">condition</span>: <span style="color: #5fafd7;">Plugin</span>::<span style="color: #5fafd7;">Command</span>[<span style="color: #1f5bff;">:HasOneMessage</span>],
+    <span style="color: #1f5bff;">visible</span>: <span style="color: #1f5bff;">true</span>,
+    <span style="color: #1f5bff;">role</span>: <span style="color: #1f5bff;">:timeline</span>) <span style="color: #00af00;">do</span> |opt|
       message = opt.messages.first
-      screen_name = message.user[<span style="color: #5fafd7;">:idname</span>]
-      <span style="color: #00d7af;">Gtk</span>::<span style="color: #00d7af;">Clipboard</span>.copy(<span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff4ea3;">: </span><span style="color: #ff8700;">#{message.to_s}</span><span style="color: #ff4ea3;"> [https://twitter.com/</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff4ea3;">/status/</span><span style="color: #ff8700;">#{message.id}</span><span style="color: #ff4ea3;">]"</span>)
-  <span style="color: #a1db00;">end</span>
+      screen_name = message.user[<span style="color: #1f5bff;">:idname</span>]
+      <span style="color: #5fafd7;">Gtk</span>::<span style="color: #5fafd7;">Clipboard</span>.copy(<span style="color: #ff1f8b;">"</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff1f8b;">: </span><span style="color: #ff8700;">#{message.to_s}</span><span style="color: #ff1f8b;"> [https://twitter.com/</span><span style="color: #ff8700;">#{screen_name}</span><span style="color: #ff1f8b;">/status/</span><span style="color: #ff8700;">#{message.id}</span><span style="color: #ff1f8b;">]"</span>)
+  <span style="color: #00af00;">end</span>
 
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -1148,7 +1148,7 @@ Postbox(ツイート投稿ウィジェット)です。ユーザがキーをタ�
 
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #00d7af;">Plugin</span>::<span style="color: #00d7af;">GUI</span>::<span style="color: #00d7af;">Event</span> = <span style="color: #00d7af;">Struct</span>.new(<span style="color: #5fafd7;">:event</span>, <span style="color: #5fafd7;">:widget</span>, <span style="color: #5fafd7;">:messages</span>)
+<pre class="src src-ruby"><span style="color: #5fafd7;">Plugin</span>::<span style="color: #5fafd7;">GUI</span>::<span style="color: #5fafd7;">Event</span> = <span style="color: #5fafd7;">Struct</span>.new(<span style="color: #1f5bff;">:event</span>, <span style="color: #1f5bff;">:widget</span>, <span style="color: #1f5bff;">:messages</span>)
 </pre>
 </div>
 
@@ -1183,25 +1183,25 @@ mikutterを使っていると、mikutter_botというアカウントのツイー
 <div class="outline-text-3" id="text-6-1">
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #6c6c6c; font-style: italic;"># </span><span style="color: #6c6c6c; font-style: italic;">-*- coding: utf-8 -*-</span>
+<pre class="src src-ruby"><span style="color: #b2b2b2; font-style: italic;"># </span><span style="color: #b2b2b2; font-style: italic;">-*- coding: utf-8 -*-</span>
 
-<span style="color: #00d7af;">Plugin</span>.create(<span style="color: #5fafd7;">:time_signal</span>) <span style="color: #a1db00;">do</span>
+<span style="color: #5fafd7;">Plugin</span>.create(<span style="color: #1f5bff;">:time_signal</span>) <span style="color: #00af00;">do</span>
 
-  defactivity <span style="color: #ff4ea3;">"hour_signal"</span>, <span style="color: #ff4ea3;">"&#26178;&#22577;"</span>
+  defactivity <span style="color: #ff1f8b;">"hour_signal"</span>, <span style="color: #ff1f8b;">"&#26178;&#22577;"</span>
 
-  now = <span style="color: #00d7af;">Time</span>.new
-  time = <span style="color: #00d7af;">Time</span>.mktime now.year, now.mon, now.day, now.hour
+  now = <span style="color: #5fafd7;">Time</span>.new
+  time = <span style="color: #5fafd7;">Time</span>.mktime now.year, now.mon, now.day, now.hour
 
-  <span style="color: #a1db00;">def</span> <span style="color: #ffd700;">next_hour</span>(time)
+  <span style="color: #00af00;">def</span> <span style="color: #ef2929;">next_hour</span>(time)
     time += 3600
-    notice <span style="color: #ff4ea3;">"next hour </span><span style="color: #ff8700;">#{time}</span><span style="color: #ff4ea3;">"</span>
-    <span style="color: #00d7af;">Reserver</span>.new(time) {
-      activity <span style="color: #5fafd7;">:hour_signal</span>, <span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff4ea3;"> &#26178;&#12391;&#12377;"</span>
+    notice <span style="color: #ff1f8b;">"next hour </span><span style="color: #ff8700;">#{time}</span><span style="color: #ff1f8b;">"</span>
+    <span style="color: #5fafd7;">Reserver</span>.new(time) {
+      activity <span style="color: #1f5bff;">:hour_signal</span>, <span style="color: #ff1f8b;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff1f8b;"> &#26178;&#12391;&#12377;"</span>
       next_hour(time)
     }
-  <span style="color: #a1db00;">end</span>
+  <span style="color: #00af00;">end</span>
   next_hour(time)
-<span style="color: #a1db00;">end</span>
+<span style="color: #00af00;">end</span>
 </pre>
 </div>
 </div>
@@ -1238,7 +1238,7 @@ mikutterを使っていると、mikutter_botというアカウントのツイー
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">defactivity <span style="color: #ff4ea3;">"hour_signal"</span>, <span style="color: #ff4ea3;">"&#26178;&#22577;"</span>
+<pre class="src src-ruby">defactivity <span style="color: #ff1f8b;">"hour_signal"</span>, <span style="color: #ff1f8b;">"&#26178;&#22577;"</span>
 </pre>
 </div>
 
@@ -1257,7 +1257,7 @@ mikutterを使っていると、mikutter_botというアカウントのツイー
 
 <div class="org-src-container">
 
-<pre class="src src-ruby">activity <span style="color: #5fafd7;">:hour_signal</span>, <span style="color: #ff4ea3;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff4ea3;"> &#26178;&#12391;&#12377;"</span>
+<pre class="src src-ruby">activity <span style="color: #1f5bff;">:hour_signal</span>, <span style="color: #ff1f8b;">"</span><span style="color: #ff8700;">#{time.hour}</span><span style="color: #ff1f8b;"> &#26178;&#12391;&#12377;"</span>
 </pre>
 </div>
 
@@ -1335,7 +1335,7 @@ mikutterは常に進化しており、このドキュメントも追随はして
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: @toshi_a</p>
-<p class="date">Created: 2015-06-10 水 01:48</p>
+<p class="date">Created: 2015-06-10 水 01:50</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
