@@ -8,8 +8,8 @@
 # Site settings
 title: mikutter
 description: "It's mikutter!"
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
+baseurl: "/writing-mikutter-plugin" # the subpath of your site, e.g. /blog
+url: "https://toshia.github.io" # the base hostname & protocol for your site
 twitter_username: toshi_a
 github_username:  toshia
 
