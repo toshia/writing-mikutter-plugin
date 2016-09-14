@@ -15,3 +15,9 @@ github_username:  toshia
 
 # Build settings
 markdown: kramdown
+
+exclude: ["vendor"]
+
+sass:
+  style: compressed
+  sass_dir: _sass
