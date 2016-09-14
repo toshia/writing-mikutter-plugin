@@ -10,6 +10,6 @@ mikutterプラグインは何でもできますが、初めてプラグインを
 
 #### 一覧
 {% for post in site.categories.example %}
-- [{{ post.title }}]({{ post.url }})
+- [{{ post.title }}]({{ site.baseurl }}{{ post.url }})
 {% endfor %}
 
