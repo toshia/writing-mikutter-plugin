@@ -53,3 +53,9 @@ https://twitter.com/toshi_a/status/781963811016155136
 mikutterは、これによってModelの同一性を判定します。あなたが定義するModelも、一意なURIを返すように`uri`をオーバライドしましょう。
 
 なお、`Retriever::Model#uri`の戻り値は、<a href="https://docs.ruby-lang.org/ja/latest/class/URI=3a=3aGeneric.html">URI::Generic</a>か、そのサブクラスです。
+
+## perma_linkとURI
+
+Modelが`perma_link`メソッド(またはフィールド)を持っている場合、その戻り値がURIとして使われます。
+
+httpまたはhttpsスキームを持っていて、Web上のリソースを指すのが`perma_link`です。一方`uri`は、それ以外のURI一般を含みます。`perma_link`は`uri`として使うことができるので、`perma_link`を定義して、それが一意なURLを返すなら、`uri`メソッドを定義する必要がありません。
