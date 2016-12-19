@@ -94,10 +94,9 @@ field.time   :created
 register :rss, name: "RSS Topic"
 ```
 
-例のコードには、このような行があります。第一引数は**Modelスラッグ**といい、Modelをタイムラインに描画するときの色設定などを保存するために使われる値です。他のModelと重複しないように、`<プラグインスラッグ>_<モデル名>`のような名前を推奨します。
-
-`name:`には、このModelの名前を渡します。設定画面で利用されるので、ユーザが見て理解できるような名前にしてください。
+registerメソッドの詳しい情報は[メタ情報]({{ site.baseurl }}{% post_url 2016-12-19-register-model %})の記事を参照してください。
 
 # 参考
 - [Retriever::Model::MessageMixin](http://mikutter.hachune.net/rdoc/Model/MessageMixin.html)
 - [UserMixinについて]({{ site.baseurl }}{% post_url 2016-10-01-model-usermixin %})
+- [メタ情報]({{ site.baseurl }}{% post_url 2016-12-19-register-model %})
