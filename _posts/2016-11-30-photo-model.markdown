@@ -12,7 +12,7 @@ mikutter 3.5からは、テクスチャやアイコン等、ありとあらゆ�
 
 # Photo Modelとは
 
-Photo Modelとは、特定の一つのModelを指す言葉ではなく、画像を表わすModelの総称です。
+Photo Modelとは、 **特定の一つのModelを指す言葉ではなく、画像を表わすModelの総称** です。
 
 具体的には、次のメソッドを実装したModelのことです。
 
@@ -21,9 +21,9 @@ Photo Modelとは、特定の一つのModelを指す言葉ではなく、画像�
 - downloading?
 - ready?
 
-これらは、独自に定義したModelに Retriever::Model::PhotoMixin をincludeすることで実装されます。mikutter標準プラグインが提供するPhoto Modelは、必ずこのMixinをincludeしています。
+これらは、独自に定義したModelに <a href="http://mikutter.hachune.net/rdoc/Model/PhotoMixin.html">Retriever::Model::PhotoMixin</a> をincludeすることで実装されます。mikutter標準プラグインが提供するPhoto Modelは、必ずこの <a href="http://mikutter.hachune.net/rdoc/Model/PhotoMixin.html">Retriever::Model::PhotoMixin</a> をincludeしています。
 
-また、gtkプラグインが入っている環境では、 /core/mui/gtk\_photo\_pixbuf.rb によって、 Retriever::Model::PhotoMixin に次のようなメソッドが追加されます。
+また、gtkプラグインが入っている環境では、 /core/mui/gtk\_photo\_pixbuf.rb によって、 <a href="http://mikutter.hachune.net/rdoc/Model/PhotoMixin.html">Retriever::Model::PhotoMixin</a> に次のようなメソッドが追加されます。
 
 - download\_pixbuf
 - load\_pixbuf
@@ -88,3 +88,7 @@ Plugin.call(:open, photo)
 ## ユーザのアイコンとして
 
 UserMixinをincludeしたModelのiconメソッドでPhotoを返せば、これがアイコンとして扱われます。
+
+# 参考
+
+- <a href="http://mikutter.hachune.net/rdoc/Model/PhotoMixin.html">Retriever::Model::PhotoMixin</a>
