@@ -1,0 +1,11 @@
+---
+layout: post
+title:  "Model"
+date:   2016-09-05 00:00:00 +0900
+categories:
+- advanced
+---
+## Modelとは
+mikutterのタイムラインにTwitterのTweet以外を表示するなど、Twitter以外の情報をmikutterに扱わせるには、 _Retriever::Model_ を使用します。
+
+
