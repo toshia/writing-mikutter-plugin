@@ -1,11 +1,43 @@
 ---
 layout: post
-title:  "Model"
+title:  "Diva::Model"
 date:   2016-09-05 00:00:00 +0900
 categories:
-- advanced
+- model
 ---
-## Modelとは
-mikutterのタイムラインにTwitterのTweet以外を表示するなど、Twitter以外の情報をmikutterに扱わせるには、 _Retriever::Model_ を使用します。
+## Diva::Modelとは
 
+mikutterで扱うあらゆるリソースの共通のインターフェイスとして `Diva::Model` があります。
+必要に応じて `Diva::Model` のサブクラスとしてデータを扱うことで、共通のインターフェイスを得ることが出来、プラグイン同士が連携する手助けとなります。
 
+## Model Behavior
+
+Modelには何種類か大まかな用途がありますが、それぞれの用途のためにスーパクラスやインターフェイスが分かれているわけではなく、Modelは自らの用途に合わせてメソッドやフィールドを実装し、それが明確にドキュメント上で決められたルールと互換性がある場合にダックタイピングによって、他のプラグインと関われるに過ぎません。
+
+よって、以下にModelの種類を大まかに挙げますが、そういう名前のClassやModuleがあるわけではありません。あなたが実装するModelがMessageのように扱ってほしいのであればMessageに必要とされるメソッドを、Userのように扱ってほしいのであればUserに必要とされるメソッドを、MessageとUser両方の用途であれば、両方を実装してください。そうすれば、mikutterの他のすべてのプラグインが適切に扱ってくれます。
+
+### Basis
+
+Diva::Modelに実装されているので、それを継承した全てのクラスがBasisであると云えます。
+これらのメソッドはオーバライドして適切な値を返すようにしましょう。
+
+- [Basis Model]({{ site.baseurl }}{% post_url 2017-05-06-basis-model %})
+
+### Message
+
+記事一般のためのインターフェイスです。
+Twitterプラグインでは、ツイートを表すMessageクラスなどがあります。
+
+### User
+
+Messageの投稿者を表すためのインターフェイスです。
+TwitterプラグインではUserクラスがUser Modelに準拠していて、リプライの宛先やふぁぼったユーザなどにも転用されています。
+
+### Photo
+
+画像一般を扱うインターフェイスです。ファイルシステム上やWeb上の画像を表します。
+画像のメタ情報を扱い、実際の画像のダウンロードやキャッシュ機能なども期待されます。
+
+mikutter標準プラグインではTwitterのツイートの添付画像や、UI上のタブやコマンドのアイコンを表すクラスがPhoto Modelに対応しています。
+
+- [Photo Model]({{ site.baseurl }}{% post_url 2016-11-30-photo-model %})
