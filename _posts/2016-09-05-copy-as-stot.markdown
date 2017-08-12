@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "キーワードミュート機能"
+title:  "STOT形式でコピー"
 date:   2016-09-05 00:00:00 +0900
 categories:
 - example
