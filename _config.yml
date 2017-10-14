@@ -8,7 +8,7 @@
 # Site settings
 title: Writing mikutter plugin
 description: "It's mikutter!"
-baseurl: "/" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://reference.mikutter.hachune.net" # the base hostname & protocol for your site
 # twitter_username: toshi_a
 # github_username:  toshia
