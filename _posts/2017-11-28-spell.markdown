@@ -1,0 +1,155 @@
+---
+layout: post
+title:  "Spellリファレンス"
+date:   2017-11-28 00:00:00 +0900
+categories:
+- reference
+---
+## <a id="search-twitter"></a>search[twitter]
+
+### 説明
+
+キーワード `q` にマッチするツイートを検索する。
+原則、フォロイーかどうかに関わらず、全てのツイートを対象にする。
+Twitter APIの制約上、正確に取得できるとは限らない。
+
+### 対象
+
+
+- **twitter** 検索するTwitter World。Twitterは検索APIにアクセスするためにAPIトークンが必須となっている
+
+
+
+### オプション
+
+
+- **q** クエリ文字列(String)。Twitter検索で用いることが出来る各種検索演算子を利用できる。
+
+- **count** 戻り値に含める最大件数(Integer)。あくまでTwitterにリクエストする件数であるため、本当にこの件数が返ってくるとは限らない。
+
+
+
+### 戻り値
+
+検索結果を列挙する `Enumerator` 。
+列挙される各ツイートは `Plugin::Twitter::Tweet` のインスタンス。
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+search(world, q: "mikutter", count: 5).next{ |tweets|
+  tweets.each do |tweet|
+    puts "#{tweet.user}: #{tweet} #{tweet.perma_link}"
+  end
+}.trap{ |e|
+  # エラー時の処理
+  error e
+}
+```
+結果
+```
+MysticDoll: マストドンですが、mikutterのところとmaud.ioのところの二箇所を気分で使ってます https://twitter.com/MysticDoll/status/935391468201549825
+MysticDoll: https://t.co/gBTqbWEv9q https://twitter.com/MysticDoll/status/935390450038464512
+vivir_en_paz: @mikutter あーあって、思ったもんね、おれが。笑 https://twitter.com/vivir_en_paz/status/935356722486456320
+vivir_en_paz: @mikutter 見た目にはわからん感じだけどねー。
+来週歯医者で怒られてきます、はい。 https://twitter.com/vivir_en_paz/status/935351722263724032
+cametan_001: 【MAD】 Mikutter Ad. 【Long Version】: https://t.co/0GYL2hwd3U via @ YouTube https://twitter.com/cametan_001/status/935329517677060096
+```
+## <a id="retweet-twitter-tweet"></a>retweet[twitter,tweet]
+
+### 説明
+
+Twitterで、リツイートを行う。
+
+### 対象
+
+
+- **twitter** リツイートを行うアカウント
+
+- **tweet** リツイートするツイート
+
+
+
+### 戻り値
+
+リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (Plugin::Twitter::Tweetのインスタンス)
+
+retweet(world, tweet).next{|retweet|
+  puts retweet
+}.trap{|exc|
+  error exc
+}
+```
+結果
+```
+RT: @toshi_a うんこでた
+```
+## <a id="retweeted-twitter-tweet"></a>retweeted[twitter,tweet]
+
+### 説明
+
+アカウント `twitter` が `tweet` をリツイートした時の `Plugin::Twitter::Tweet` を取得する。APIリクエストを発生させず、Tweetオブジェクトに入っている状態のみを参照する。Twitter APIからこの情報を正確に取得する方法は提供されていない。
+
+`retweeted` はAPIに問い合わせず、分かる範囲で既にリツイートしている場合はそのtweetを、わからないか、リツイートしていない場合は失敗する。
+
+`retweeted?` は、既にリツイートしている場合 `true` を、わからないか、リツイートしていない場合は `false` を返す。
+
+このspellは、リツイートが可能か否かは確認しない。そういった用途には、 [retweet[twitter,tweet]](#retweet-twitter-tweet) を利用すべきである。
+
+### 対象
+
+
+- **twitter** リツイートを行ったか確認するアカウント
+
+- **tweet** リツイートされているか確認するツイート
+
+
+
+### 戻り値
+
+リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)
+
+### 例
+
+
+
+#### リツイートをすでにしていれば、そのIDを出力
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = Message.findbyid(933936591445331968)# (Plugin::Twitter::Tweetのインスタンス)
+
+retweeted(world, tweet).next{|retweet|
+  notice retweet.id
+}.trap{|exc|
+  error exc
+}
+```
+結果
+```
+935447389174824960
+```
+
+
+#### リツイートをすでにしていれば、「もうリツイートしているみたいです」と表示
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (Plugin::Twitter::Tweetのインスタンス)
+
+if retweeted?(world, tweet)
+  puts "もうリツイートしているみたいです"
+end
+```
+結果
+```
+もうリツイートしているみたいです
+```
+

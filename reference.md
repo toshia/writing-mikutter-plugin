@@ -26,4 +26,9 @@ permalink: /reference/
 - [{{ post.title }}]({{ site.baseurl }}{{ post.url }})
 {% endfor %}
 
+## 付録
+
+{% for post in site.categories.reference %}
+- [{{ post.title }}]({{ site.baseurl }}{{ post.url }})
+{% endfor %}
 
