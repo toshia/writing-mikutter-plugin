@@ -22,6 +22,8 @@
   option:
     - name: body
       description: 本文(String)。
+    - name: visibility
+      description: 公開範囲。 `:public` の場合は通常のツイート、 `:direct` の場合はダイレクトメッセージとなる。省略するか `nil` の場合は、 `to` がダイレクトメッセージの場合はdirectを、それ以外の場合はpublicを指定されたものと見做す。
     - name: to
       description: 宛先となる Plugin::Twitter::User または Plugin::Twitter::Tweet のインスタンスを列挙するEnumerable。混在してもよく、ツイートが含まれる場合は、投稿されるツイートは最初に見つかったツイートに対するリプライとなる。1件だけの場合は、配列ではなくインスタンスを直接渡すことも出来る。宛先がない場合は省略するか `nil` または `[]` を渡す。
   returns: |-
