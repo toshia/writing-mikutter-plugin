@@ -5,6 +5,76 @@ date:   2017-11-28 00:00:00 +0900
 categories:
 - reference
 ---
+## <a id="post-twitter"></a>post[twitter]
+
+### 説明
+
+ツイートをアカウント `twitter` でツイートする。
+
+### 対象
+
+
+- **twitter** 投稿するTwitter World。
+
+
+
+### オプション
+
+
+- **body** 本文(String)。
+
+- **to** 宛先となる Plugin::Twitter::User または Plugin::Twitter::Tweet のインスタンスを列挙するEnumerable。混在してもよく、ツイートが含まれる場合は、投稿されるツイートは最初に見つかったツイートに対するリプライとなる。1件だけの場合は、配列ではなくインスタンスを直接渡すことも出来る。宛先がない場合は省略するか `nil` または `[]` を渡す。
+
+
+
+### 戻り値
+
+投稿した Plugin::Twitter::Tweet のインスタンス。
+
+### 例
+
+
+
+#### 「うんこでた」とツイートする
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+
+post(world, body: "うんこでた")
+```
+結果
+```
+(なし)
+```
+
+
+#### ツイートを送信し、成否を受け取る
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+
+post(world, body: "うんこでた").next{|t|
+  notice "ツイートできました。内容: #{t.message}"
+}.trap{|exc|
+  error exc
+}
+```
+結果
+```
+ツイートできました。内容: うんこでた
+```
+
+
+#### リプライを送る
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (Plugin::Twitter::Tweet のインスタンス)
+
+post(world, body: "うんこでた", to: tweet)
+```
+結果
+```
+(なし)
+```
+
 ## <a id="search-twitter"></a>search[twitter]
 
 ### 説明
@@ -31,8 +101,8 @@ Twitter APIの制約上、正確に取得できるとは限らない。
 
 ### 戻り値
 
-検索結果を列挙する `Enumerator` 。
-列挙される各ツイートは `Plugin::Twitter::Tweet` のインスタンス。
+検索結果を列挙するEnumerable。
+列挙される各ツイートはPlugin::Twitter::Tweetのインスタンス。
 
 ### 例
 

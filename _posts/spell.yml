@@ -13,6 +13,44 @@
 #       result: |-
 #         aaa
 
+- name: post
+  description: |-
+    ツイートをアカウント `twitter` でツイートする。
+  target:
+    - name: twitter
+      description: 投稿するTwitter World。
+  option:
+    - name: body
+      description: 本文(String)。
+    - name: to
+      description: 宛先となる Plugin::Twitter::User または Plugin::Twitter::Tweet のインスタンスを列挙するEnumerable。混在してもよく、ツイートが含まれる場合は、投稿されるツイートは最初に見つかったツイートに対するリプライとなる。1件だけの場合は、配列ではなくインスタンスを直接渡すことも出来る。宛先がない場合は省略するか `nil` または `[]` を渡す。
+  returns: |-
+    投稿した Plugin::Twitter::Tweet のインスタンス。
+  example:
+    - title: 「うんこでた」とツイートする
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+
+        post(world, body: "うんこでた")
+      result: "(なし)"
+    - title: ツイートを送信し、成否を受け取る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+
+        post(world, body: "うんこでた").next{|t|
+          notice "ツイートできました。内容: #{t.message}"
+        }.trap{|exc|
+          error exc
+        }
+      result: "ツイートできました。内容: うんこでた"
+    - title: リプライを送る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (Plugin::Twitter::Tweet のインスタンス)
+
+        post(world, body: "うんこでた", to: tweet)
+      result: "(なし)"
+
 - name: "search"
   description: |-
     キーワード `q` にマッチするツイートを検索する。
@@ -27,8 +65,8 @@
     - name: count
       description: 戻り値に含める最大件数(Integer)。あくまでTwitterにリクエストする件数であるため、本当にこの件数が返ってくるとは限らない。
   returns: |-
-    検索結果を列挙する `Enumerator` 。
-    列挙される各ツイートは `Plugin::Twitter::Tweet` のインスタンス。
+    検索結果を列挙するEnumerable。
+    列挙される各ツイートはPlugin::Twitter::Tweetのインスタンス。
   example:
     - code: |-
         world, = Plugin.filtering(:world_current, nil)
