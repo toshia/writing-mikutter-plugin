@@ -5,6 +5,78 @@ date:   2017-11-28 00:00:00 +0900
 categories:
 - reference
 ---
+## <a id="destroy-twitter-twitter_tweet"></a>destroy[twitter,twitter_tweet]
+
+### 説明
+
+`twitter_tweet` を削除する。削除できるのは、自分が投稿したツイートのみ。
+
+### 対象
+
+
+- **twitter** 投稿またはリツイートを行ったTwitter World。
+
+- **twitter_tweet** 削除するツイート。
+
+
+
+### 戻り値
+
+削除したツイートに対応する Plugin::Twitter::Tweet のインスタンス。
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+
+destroy(world, tweet).next{|tweet|
+  puts "ツイート「#{tweet}」 を削除しました"
+}.trap{|exc|
+  error exc
+}
+```
+結果
+```
+ツイート「○×△」を削除しました
+```
+## <a id="destroy_retweet-twitter-twitter_tweet"></a>destroy_retweet[twitter,twitter_tweet]
+
+### 説明
+
+`twitter_tweet` に行ったリツイートをキャンセルする。
+
+### 対象
+
+
+- **twitter** 投稿またはリツイートを行ったTwitter World。
+
+- **twitter_tweet** `twitter` がリツイートしているツイート。
+
+
+
+### 戻り値
+
+リツイート自身の Plugin::Twitter::Tweet のインスタンス。
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+
+destroy_retweet(world, tweet).next{|tweet|
+  puts "ツイート「#{tweet}」 を削除しました"
+}.trap{|exc|
+  error exc
+}
+```
+結果
+```
+ツイート「RT @toshi_a: ○×△」を削除しました
+```
 ## <a id="post-twitter"></a>post[twitter]
 
 ### 説明

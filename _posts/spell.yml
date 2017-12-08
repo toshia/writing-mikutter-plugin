@@ -2,9 +2,11 @@
 #   description: |-
 #     aaa
 #   target:
-#     model_slug: aaa
+#     - name: model_slug
+#       description: 説明
 #   option:
-#     q: aaa
+#     - name: オプション引数の名前
+#       description: 説明
 #   returns:
 #     aaa
 #   example:
@@ -12,6 +14,52 @@
 #         aaa
 #       result: |-
 #         aaa
+
+- name: destroy
+  description: |-
+    `twitter_tweet` を削除する。削除できるのは、自分が投稿したツイートのみ。
+  target:
+    - name: twitter
+      description: 投稿またはリツイートを行ったTwitter World。
+    - name: twitter_tweet
+      description: 削除するツイート。
+  returns: |-
+    削除したツイートに対応する Plugin::Twitter::Tweet のインスタンス。
+  example:
+    - code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+        
+        destroy(world, tweet).next{|tweet|
+          puts "ツイート「#{tweet}」 を削除しました"
+        }.trap{|exc|
+          error exc
+        }
+      result: |-
+        ツイート「○×△」を削除しました
+
+- name: destroy_retweet
+  description: |-
+    `twitter_tweet` に行ったリツイートをキャンセルする。
+  target:
+    - name: twitter
+      description: 投稿またはリツイートを行ったTwitter World。
+    - name: twitter_tweet
+      description: "`twitter` がリツイートしているツイート。"
+  returns: |-
+    リツイート自身の Plugin::Twitter::Tweet のインスタンス。
+  example:
+    - code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+        
+        destroy_retweet(world, tweet).next{|tweet|
+          puts "ツイート「#{tweet}」 を削除しました"
+        }.trap{|exc|
+          error exc
+        }
+      result: |-
+        ツイート「RT @toshi_a: ○×△」を削除しました
 
 - name: post
   description: |-
