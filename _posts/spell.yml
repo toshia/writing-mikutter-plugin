@@ -196,6 +196,28 @@
         来週歯医者で怒られてきます、はい。 https://twitter.com/vivir_en_paz/status/935351722263724032
         cametan_001: 【MAD】 Mikutter Ad. 【Long Version】: https://t.co/0GYL2hwd3U via @ YouTube https://twitter.com/cametan_001/status/935329517677060096
 
+- name: unfavorite
+  description: |-
+    ツイートのお気に入り（いいね）をキャンセルします。
+  target:
+    - name: twitter
+      description: ふぁぼっているアカウントのTwitter World。
+    - name: twitter_tweet
+      description: あんふぁぼするツイート
+  returns: |-
+    お気に入りを削除したツイート
+  example:
+    - code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (Plugin::Twitter::Tweetのインスタンス)
+        
+        unfavorite(world, tweet).next{|unfavorited_tweet|
+          puts unfavorited_tweet
+        }.trap{|exc|
+          error exc
+        }
+      result: "うんこでた"
+
 - name: retweet
   description: |-
     Twitterで、リツイートを行う。
