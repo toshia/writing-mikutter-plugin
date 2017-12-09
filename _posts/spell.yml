@@ -61,6 +61,66 @@
       result: |-
         ツイート「RT @toshi_a: ○×△」を削除しました
 
+- name: favorite
+  description: |-
+    ツイートをお気に入りに追加（いいね）します。
+  target:
+    - name: twitter
+      description: ふぁぼるアカウントのTwitter World。
+    - name: twitter_tweet
+      description: ふぁぼる対象のツイート
+  returns: |-
+    お気に入りに追加したツイートに対応する Plugin::Twitter::Tweet
+  example:
+    - code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (Plugin::Twitter::Tweetのインスタンス)
+        
+        favorite(world, tweet).next{|favorited_tweet|
+          puts favorited_tweet
+        }.trap{|exc|
+          error exc
+        }
+      result: "うんこでた"
+
+- name: favorited
+  description: &favorite-twitter-twitter_tweet_description |-
+    ツイートがお気に入りに追加されているか否かを取得する。APIリクエストを発生させず、Tweetオブジェクトに入っている状態のみを参照する。
+
+    `favorited` はAPIに問い合わせず、分かる範囲で既にお気に入りしている場合はtrueを、わからないか、お気に入りしていない場合はfalseを返す。
+
+    `favorited?` は、既にお気に入りしている場合 `true` を、わからないか、お気に入りしていない場合は `false` を返す。
+  target:
+    - name: twitter
+      description: お気に入りに追加したユーザの Twitter World
+    - name: twitter_tweet
+      description: お気に入りに追加されたツイート
+  returns: &favorite-twitter-twitter_tweet_returns
+    お気に入りに追加されたツイート
+  example:
+    - code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = Plugin::Twitter::Message.findbyid(939122988460285954) # (Plugin::Twitter::Tweetのインスタンス)
+        notice favorited?(world, tweet)
+      result: |-
+        false
+
+- name: favorited
+  description: *favorite-twitter-twitter_tweet_description
+  target:
+    - name: twitter_user
+      description: お気に入りに追加したユーザ
+    - name: twitter_tweet
+      description: お気に入りに追加されたツイート
+  returns: *favorite-twitter-twitter_tweet_returns
+  example:
+    - code: |-
+        user = Plugin::Twitter::User.findbyidname('toshi_a_a')
+        tweet = Plugin::Twitter::Message.findbyid(939122988460285954)
+        notice favorited?(user, tweet)
+      result: |-
+        false
+
 - name: post
   description: |-
     ツイートをアカウント `twitter` でツイートする。
