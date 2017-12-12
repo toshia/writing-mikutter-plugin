@@ -1,0 +1,116 @@
+---
+layout: post
+title:  "Spell"
+date:   2017-12-12 00:00:00 +0900
+categories:
+- basis
+---
+
+「メンションする」「お気に入りに追加する」「リツイートする」「検索する」といった、１つ以上のModelの集合に対して行う手続きのことを **Spell** と呼びます。
+
+## Spellを呼び出す
+
+### 単純な呼び出し
+
+プラグインのコンテキストで、呼び出したいSpellの名前に一致するDSLメソッドが定義されているため、例えば [retweet\[twitter, twitter_tweet\]]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#retweet-twitter-twitter_tweet) というSpellを呼び出したい場合は、たんに `retweet` と書きます。
+具体的には、以下のように呼び出します。
+
+```ruby
+Plugin.create(:sample) do
+  retweet(twitter, message)
+end
+```
+
+Spellの名前と、引数の種類さえ合っていれば、引数の順番は任意です。この性質によって、どちらがレシーバであっても同じ動きをするように、二箇所に実装を行う必要がなくなりましたし、呼び出す側も順序を気にする必要はありません。
+
+### 完了後に処理をする
+
+Spellは大抵、サーバとの通信が発生します。この通信はバックグラウンドで実行されます。したがって、ネットワークが遅い環境でも、通信が完了するまでフリーズするといった心配はありません。
+
+```ruby
+Plugin.create(:sample) do
+  retweet(twitter, message)
+  # 通信が完了していなくてもこの行は実行される可能性がある
+end
+```
+
+Spellの呼び出しが終わった後に処理をしたい場合は、単に次の行に書いても先に実行される可能性が高いです。
+
+Spellは **必ず** Deferredを返すため、次のような方法で、終了後に呼び出される処理を実現します。
+
+#### 成功した後
+
+例えば [retweet\[twitter, twitter_tweet\]]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#retweet-twitter-twitter_tweet) Spellが成功した後に処理を実行するには以下のように書きます。
+
+```ruby
+Plugin.create(:sample) do
+  retweet(twitter, message).next{|retweet_message|
+    # リツイートできた場合
+  }.trap{|err|
+    # エラーの場合
+  }
+end
+```
+
+`next{` から `}` の間に、Spellが成功したあとの処理を書きます。引数の `retweet_message` は、spellによって内容が変わります。各Spellが返す結果については[Spellリファレンス]({{ site.baseurl }}{% post_url 2017-11-28-spell %})を参照してください。
+
+#### 失敗した後
+
+例えば [retweet\[twitter, twitter_tweet\]]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#retweet-twitter-twitter_tweet) Spellが失敗した後に処理を実行するには以下のように書きます。
+
+```ruby
+Plugin.create(:sample) do
+  retweet(twitter, message).trap{|err|
+    # エラーの場合
+  }
+end
+```
+
+`trap{` から `}` の間に、Spellが失敗したあとの処理を書きます。 `err` には、例外オブジェクトなどが入っています。具体的には、以下のいずれかの場合には失敗となり、 `trap` が呼ばれます。
+
+- そのSpellと同名のSpellは存在するが、引数に合致するSpellが存在しなかった場合
+- ネットワークアクセスが出来ないなど、Spellの処理中にエラーが発生した場合
+- 次の項の前提条件の確認で `false` が得られた場合
+
+### 前提条件の確認
+
+Spellの名前に「?」をつけると、そのSpellを呼び出すことができるか調べることができます。例えば `retweet?` は、対象のツイートを行ったユーザが非公開アカウントであるなど、リツイートができないことが予めわかっているなら `false` を返します。そうではない場合は `true` を返します。
+
+```ruby
+Plugin.create(:sample) do
+  retweet?(twitter, message) # => true or false
+end
+```
+
+Spellにクエスチョンマークが付いたメソッドは、「～が可能か」と読むことが出来ます。例の場合は「リツイートが可能か」です。「これがリツイートであるか」という意味ではありません。
+
+例外として、過去形の英単語が使われているSpellがあります。例えば [retweeted]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#retweeted-twitter-twitter_tweet) というSpellは、リファレンスにはリツイートのMessageオブジェクトを返すと説明されていますが、同時に「**retweeted?** は、既にリツイートしている場合 `true` を、わからないか、リツイートしていない場合は `false` を返す。」とあります。 [favorited]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#favorited-twitter-twitter_tweet)なども同様です。
+
+### 異なる呼び出し方
+
+Spellの名前と、ローカル変数などの名前が重複していると、Spellよりローカル変数が優先されます。
+その場合は、 `spell.` を先頭に付けることで呼び出せます。この記法は、書き方が違うだけで意味は全く同じです。
+
+```ruby
+Plugin.create(:sample) do
+  spell.retweet(twitter, message)
+  spell.retweet?(twitter, message) # => true or false
+end
+```
+
+## Spellを定義する
+
+mikutter 3.6では、これらをSpellと名付け、Modelではなくプラグインで定義するようにしました。
+
+```ruby
+Plugin.create(:sample) do
+  defspell(:retweet, :twitter, :twitter_message,
+           condition: ->(twitter, message){ !message.protected? }
+          ) do |twitter, message|
+    (twitter/:retweet/:add).message(id: message.id)
+  end
+end
+```
+
+`condition:` 引数で、ブロックが呼ばれる前提条件を設定することができます。conditionがfalseを返せば、ブロックが呼ばれずに呼び出しは失敗します。
+
