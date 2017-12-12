@@ -224,7 +224,7 @@
   target:
     - name: twitter
       description: リツイートを行うアカウント
-    - name: tweet
+    - name: twitter_tweet
       description: リツイートするツイート
   returns:
     リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)
@@ -252,7 +252,7 @@
   target:
     - name: twitter
       description: リツイートを行ったか確認するアカウント
-    - name: tweet
+    - name: twitter_tweet
       description: リツイートされているか確認するツイート
   returns:
     リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)

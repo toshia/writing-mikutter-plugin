@@ -343,7 +343,7 @@ unfavorite(world, tweet).next{|unfavorited_tweet|
 ```
 うんこでた
 ```
-## <a id="retweet-twitter-tweet"></a>retweet[twitter,tweet]
+## <a id="retweet-twitter-twitter_tweet"></a>retweet[twitter,twitter_tweet]
 
 ### 説明
 
@@ -354,7 +354,7 @@ Twitterで、リツイートを行う。
 
 - **twitter** リツイートを行うアカウント
 
-- **tweet** リツイートするツイート
+- **twitter_tweet** リツイートするツイート
 
 
 
@@ -379,7 +379,7 @@ retweet(world, tweet).next{|retweet|
 ```
 RT: @toshi_a うんこでた
 ```
-## <a id="retweeted-twitter-tweet"></a>retweeted[twitter,tweet]
+## <a id="retweeted-twitter-twitter_tweet"></a>retweeted[twitter,twitter_tweet]
 
 ### 説明
 
@@ -396,7 +396,7 @@ RT: @toshi_a うんこでた
 
 - **twitter** リツイートを行ったか確認するアカウント
 
-- **tweet** リツイートされているか確認するツイート
+- **twitter_tweet** リツイートされているか確認するツイート
 
 
 
