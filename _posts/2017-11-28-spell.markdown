@@ -183,7 +183,7 @@ notice favorited?(user, tweet)
 ```
 false
 ```
-## <a id="post-twitter"></a>post[twitter]
+## <a id="compose-twitter"></a>compose[twitter]
 
 ### 説明
 
@@ -219,7 +219,7 @@ false
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
 
-post(world, body: "うんこでた")
+compose(world, body: "うんこでた")
 ```
 結果
 ```
@@ -231,7 +231,7 @@ post(world, body: "うんこでた")
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
 
-post(world, body: "うんこでた").next{|t|
+compose(world, body: "うんこでた").next{|t|
   notice "ツイートできました。内容: #{t.message}"
 }.trap{|exc|
   error exc
@@ -248,7 +248,7 @@ post(world, body: "うんこでた").next{|t|
 world, = Plugin.filtering(:world_current, nil)
 tweet = # (Plugin::Twitter::Tweet のインスタンス)
 
-post(world, body: "うんこでた", to: tweet)
+compose(world, body: "うんこでた", to: tweet)
 ```
 結果
 ```

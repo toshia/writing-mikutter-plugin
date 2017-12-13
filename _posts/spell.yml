@@ -121,7 +121,7 @@
       result: |-
         false
 
-- name: post
+- name: compose
   description: |-
     ツイートをアカウント `twitter` でツイートする。
   target:
@@ -141,13 +141,13 @@
       code: |-
         world, = Plugin.filtering(:world_current, nil)
 
-        post(world, body: "うんこでた")
+        compose(world, body: "うんこでた")
       result: "(なし)"
     - title: ツイートを送信し、成否を受け取る
       code: |-
         world, = Plugin.filtering(:world_current, nil)
 
-        post(world, body: "うんこでた").next{|t|
+        compose(world, body: "うんこでた").next{|t|
           notice "ツイートできました。内容: #{t.message}"
         }.trap{|exc|
           error exc
@@ -158,7 +158,7 @@
         world, = Plugin.filtering(:world_current, nil)
         tweet = # (Plugin::Twitter::Tweet のインスタンス)
 
-        post(world, body: "うんこでた", to: tweet)
+        compose(world, body: "うんこでた", to: tweet)
       result: "(なし)"
 
 - name: "search"
