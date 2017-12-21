@@ -41,7 +41,7 @@ destroy(world, tweet).next{|tweet|
 ```
 ツイート「○×△」を削除しました
 ```
-## <a id="destroy_retweet-twitter-twitter_tweet"></a>destroy_retweet[twitter,twitter_tweet]
+## <a id="destroy_share-twitter-twitter_tweet"></a>destroy_share[twitter,twitter_tweet]
 
 ### 説明
 
@@ -67,7 +67,7 @@ destroy(world, tweet).next{|tweet|
 world, = Plugin.filtering(:world_current, nil)
 tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
 
-destroy_retweet(world, tweet).next{|tweet|
+destroy_share(world, tweet).next{|tweet|
   puts "ツイート「#{tweet}」 を削除しました"
 }.trap{|exc|
   error exc
@@ -343,7 +343,7 @@ unfavorite(world, tweet).next{|unfavorited_tweet|
 ```
 うんこでた
 ```
-## <a id="retweet-twitter-twitter_tweet"></a>retweet[twitter,twitter_tweet]
+## <a id="share-twitter-twitter_tweet"></a>share[twitter,twitter_tweet]
 
 ### 説明
 
@@ -369,8 +369,8 @@ Twitterで、リツイートを行う。
 world, = Plugin.filtering(:world_current, nil)
 tweet = # (Plugin::Twitter::Tweetのインスタンス)
 
-retweet(world, tweet).next{|retweet|
-  puts retweet
+share(world, tweet).next{|share|
+  puts share
 }.trap{|exc|
   error exc
 }
@@ -379,17 +379,17 @@ retweet(world, tweet).next{|retweet|
 ```
 RT: @toshi_a うんこでた
 ```
-## <a id="retweeted-twitter-twitter_tweet"></a>retweeted[twitter,twitter_tweet]
+## <a id="shared-twitter-twitter_tweet"></a>shared[twitter,twitter_tweet]
 
 ### 説明
 
 アカウント `twitter` が `tweet` をリツイートした時の `Plugin::Twitter::Tweet` を取得する。APIリクエストを発生させず、Tweetオブジェクトに入っている状態のみを参照する。Twitter APIからこの情報を正確に取得する方法は提供されていない。
 
-`retweeted` はAPIに問い合わせず、分かる範囲で既にリツイートしている場合はそのtweetを、わからないか、リツイートしていない場合は失敗する。
+`shared` はAPIに問い合わせず、分かる範囲で既にリツイートしている場合はそのtweetを、わからないか、リツイートしていない場合は失敗する。
 
-`retweeted?` は、既にリツイートしている場合 `true` を、わからないか、リツイートしていない場合は `false` を返す。
+`shared?` は、既にリツイートしている場合 `true` を、わからないか、リツイートしていない場合は `false` を返す。
 
-このspellは、リツイートが可能か否かは確認しない。そういった用途には、 [retweet[twitter,tweet]](#retweet-twitter-tweet) を利用すべきである。
+このspellは、リツイートが可能か否かは確認しない。そういった用途には、 [share[twitter,tweet]](#share-twitter-tweet) を利用すべきである。
 
 ### 対象
 
@@ -413,8 +413,8 @@ RT: @toshi_a うんこでた
 world, = Plugin.filtering(:world_current, nil)
 tweet = Message.findbyid(933936591445331968)# (Plugin::Twitter::Tweetのインスタンス)
 
-retweeted(world, tweet).next{|retweet|
-  notice retweet.id
+shared(world, tweet).next{|share|
+  notice share.id
 }.trap{|exc|
   error exc
 }
@@ -430,7 +430,7 @@ retweeted(world, tweet).next{|retweet|
 world, = Plugin.filtering(:world_current, nil)
 tweet = # (Plugin::Twitter::Tweetのインスタンス)
 
-if retweeted?(world, tweet)
+if shared?(world, tweet)
   puts "もうリツイートしているみたいです"
 end
 ```
