@@ -255,6 +255,147 @@ compose(world, body: "うんこでた", to: tweet)
 (なし)
 ```
 
+## <a id="compose-twitter-twitter_tweet"></a>compose[twitter,twitter_tweet]
+
+### 説明
+
+ツイートをアカウント `twitter` で `twitter_tweet` にリプライする。
+公開範囲の設定はなく、ダイレクトメッセージにはならず、常にリプライとなる。
+
+### 対象
+
+
+- **twitter** 投稿するTwitter World。
+
+- **twitter_tweet** 宛先のツイート。
+
+
+
+### オプション
+
+
+- **body** 本文(String)。
+
+
+
+### 戻り値
+
+投稿した Plugin::Twitter::Tweet のインスタンス。
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+tweet = # (Plugin::Twitter::Tweet のインスタンス)
+
+compose(world, tweet, body: "うんこでた")
+```
+結果
+```
+(なし)
+```
+## <a id="compose-twitter-twitter_user"></a>compose[twitter,twitter_user]
+
+### 説明
+
+`twitter_user` にメンションまたはダイレクトメッセージを送る。
+
+### 対象
+
+
+- **twitter** 投稿するTwitter World。
+
+- **twitter_user** メンションする相手又はダイレクトメッセージを送る相手。
+
+
+
+### オプション
+
+
+- **body** 本文(String)。
+
+- **visibility** 公開範囲。 `:public` の場合は通常のツイート、 `:direct` の場合はダイレクトメッセージとなる。省略するか `nil` の場合は、 `:public` を指定されたものと見做す。
+
+
+
+### 戻り値
+
+投稿した Plugin::Twitter::Tweet のインスタンス。
+
+### 例
+
+
+
+#### メンションを送る
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+user = # (twitter_user のインスタンス)
+
+compose(world, user, body: "うんこでた").next{|mention|
+  notice "ツイートできました。内容: #{mention.message}"
+}
+```
+結果
+```
+ツイートできました。内容: @toshi_a うんこでた
+```
+
+
+#### ダイレクトメッセージを送る
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+user = # (twitter_user のインスタンス)
+
+compose(world, user, body: "うんこでた", visibility: :direct).next{|dm|
+  notice "DMできました。内容: #{dm.message}"
+}
+```
+結果
+```
+DMできました。内容: うんこでた
+```
+
+## <a id="compose-twitter-twitter_direct_message"></a>compose[twitter,twitter_direct_message]
+
+### 説明
+
+ツイートをアカウント `twitter` で `twitter_direct_message` の送り主にダイレクトメッセージを送る。
+公開範囲の設定はなく、ツイートにはならず、常にダイレクトメッセージとなる。
+
+### 対象
+
+
+- **twitter** 投稿するTwitter World。
+
+- **twitter_direct_message** 宛先となるユーザが投稿したダイレクトメッセージ。
+
+
+
+### オプション
+
+
+- **body** 本文(String)。
+
+
+
+### 戻り値
+
+投稿した twitter_direct_message Model のインスタンス。
+
+### 例
+
+
+```ruby
+world, = Plugin.filtering(:world_current, nil)
+dm = # (twitter_direct_message Model のインスタンス)
+
+compose(world, dm, body: "うんこでた")
+```
+結果
+```
+(なし)
+```
 ## <a id="search-twitter"></a>search[twitter]
 
 ### 説明

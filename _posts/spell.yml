@@ -161,6 +161,87 @@
         compose(world, body: "うんこでた", to: tweet)
       result: "(なし)"
 
+- name: compose
+  description: |-
+    ツイートをアカウント `twitter` で `twitter_tweet` にリプライする。
+    公開範囲の設定はなく、ダイレクトメッセージにはならず、常にリプライとなる。
+  target:
+    - name: twitter
+      description: 投稿するTwitter World。
+    - name: twitter_tweet
+      description: 宛先のツイート。
+  option:
+    - name: body
+      description: 本文(String)。
+  returns: |-
+    投稿した Plugin::Twitter::Tweet のインスタンス。
+  example:
+    - title: リプライを送る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        tweet = # (Plugin::Twitter::Tweet のインスタンス)
+
+        compose(world, tweet, body: "うんこでた")
+      result: "(なし)"
+
+- name: compose
+  description: |-
+    `twitter_user` にメンションまたはダイレクトメッセージを送る。
+  target:
+    - name: twitter
+      description: 投稿するTwitter World。
+    - name: twitter_user
+      description: メンションする相手又はダイレクトメッセージを送る相手。
+  option:
+    - name: body
+      description: 本文(String)。
+    - name: visibility
+      description: 公開範囲。 `:public` の場合は通常のツイート、 `:direct` の場合はダイレクトメッセージとなる。省略するか `nil` の場合は、 `:public` を指定されたものと見做す。
+  returns: |-
+    投稿した Plugin::Twitter::Tweet のインスタンス。
+  example:
+    - title: メンションを送る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        user = # (twitter_user のインスタンス)
+
+        compose(world, user, body: "うんこでた").next{|mention|
+          notice "ツイートできました。内容: #{mention.message}"
+        }
+      result: "ツイートできました。内容: @toshi_a うんこでた"
+    - title: ダイレクトメッセージを送る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        user = # (twitter_user のインスタンス)
+
+        compose(world, user, body: "うんこでた", visibility: :direct).next{|dm|
+          notice "DMできました。内容: #{dm.message}"
+        }
+      result: "DMできました。内容: うんこでた"
+
+- name: compose
+  description: |-
+    ツイートをアカウント `twitter` で `twitter_direct_message` の送り主にダイレクトメッセージを送る。
+    公開範囲の設定はなく、ツイートにはならず、常にダイレクトメッセージとなる。
+  target:
+    - name: twitter
+      description: 投稿するTwitter World。
+    - name: twitter_direct_message
+      description: 宛先となるユーザが投稿したダイレクトメッセージ。
+  option:
+    - name: body
+      description: 本文(String)。
+  returns: |-
+    投稿した twitter_direct_message Model のインスタンス。
+  example:
+    - title: DMを送る
+      code: |-
+        world, = Plugin.filtering(:world_current, nil)
+        dm = # (twitter_direct_message Model のインスタンス)
+
+        compose(world, dm, body: "うんこでた")
+      result: "(なし)"
+
 - name: "search"
   description: |-
     キーワード `q` にマッチするツイートを検索する。
