@@ -1,0 +1,95 @@
+---
+layout: post
+title:  "confroot"
+date:   2018-01-12 00:00:00 +0900
+categories:
+- basis
+---
+
+mikutterは、 `~/.mikutter/` というディレクトリの下に、設定などのファイルを格納し、他の場所にはファイルを動的に作成することは原則ありません。当然、mikutterプラグインもこの原則に従わなければなりません。
+
+このような、ファイルを一時的、または恒久的に保存するための領域は、 **confroot** と呼ばれています。
+
+## confrootを変更して起動する
+
+**confroot** は起動時に別の場所を指定することが出来るため、 `~/.mikutter/` というパスをハードコーディングしてはいけません。コード内では、次節の方法で取得することになりますが、この節ではconfrootを変更して起動するとどうなるかを確認します。
+
+confrootには、サードパーティプラグイン、設定、World情報などが格納されています。したがって、confrootを空のディレクトリに設定すると、全ての設定がデフォルトの状態で起動し、チュートリアルが始まります。当然、confrootを設定せずに起動すれば、いつものmikutterに戻ります。
+
+### MIKUTTER_CONFROOT 環境変数
+
+mikutterを起動する時に、環境変数 `MIKUTTER_CONFROOT` にパスを設定しておくと、その場所をconfrootとして利用しようとします。
+
+```sh
+MIKUTTER_CONFROOT=/path/to/confroot ./mikutter.rb
+```
+
+上記のようなコマンドで起動すると、 `/path/to/confroot` がなければ作成され、それをconfrootとして起動します。この方法はmikutter 3.5以降で使えますが、古いmikutterだと使えません。その場合は次の方法を試してください。
+
+### --confroot= オプション
+
+起動時のコマンドラインオプションで指定する方法もあります。
+
+```sh
+./mikutter.rb --confroot=/path/to/confroot
+```
+
+上記のようなコマンドで起動すると、 `/path/to/confroot` がなければ作成され、それをconfrootとして起動します。
+
+
+## confrootをプラグインから取得する
+
+mikutterのコードであればどこでも、次のように書けばconfrootディレクトリを得られます。この値は、上記のような起動時の指定によってconfrootが変えられていたらその値になりますし、設定されていなければ `"(ホームディレクトリ)/.mikutter/"` のような文字列を返します。
+
+```ruby
+Environment::CONFROOT
+```
+
+confroot以下には、 `settings` `tmp` `log` `cache` という4つのディレクトリがあり、それぞれ用途が決まっていますが、このディレクトリたちにも定数が割り当てられています。普通の用途では、 `Environment::CONFROOT` ではなく、以下の定数を使いたいはずです。
+
+| 定数 | デフォルト値 | 意味 |
+|------|------------|------|
+| `Environment::CONFROOT` | ~/.mikutter/ | confroot |
+| `Environment::SETTINGDIR` | (confroot)/settings/ | 恒久的に保持しておきたい情報 |
+| `Environment::TMPDIR` | (confroot)/tmp/ | 一時ファイル領域 |
+| `Environment::LOGDIR` | (confroot)/log/ | ログ情報。バグレポートなどに使われている |
+| `Environment::CACHE` | (confroot)/cache/ | キャッシュ。画像やAPIレスポンスなどを保存するために使う |
+
+上記の5つ（実質、CONFROOT以外の4つ）のなかから、利用したい用途に合わせて選んでください。また、実際に使う場合は次の **衝突を回避する** を必ず読んでください。
+
+## 衝突を回避する
+
+単に上記のディレクトリから一つを選んで使うと、他のプラグインに意図せずファイルを書き換えられてしまう危険性があるので、実際には **Environment::SETTINGDIR/プラグインスラッグ** のようなディレクトリを使うべきです。mikutterインスタンス上に同じプラグインスラッグをもつプラグインは存在できないため、このようにしておけば衝突はしません。
+
+プラグインスラッグが `test` の場合、以下のようなコードで安全にディレクトリ名を得ることができます。
+
+```ruby
+File.join(Environment::SETTINGDIR, 'test')
+```
+
+## confrootで得られるパスを扱う時のtips
+
+ファイルパスを扱う時、最後のスラッシュの有無は、プログラミング言語に関わらず問題になることが多いです。 `Environment::CONFROOT` などは、起動時のユーザの指定によっては、末尾にスラッシュがあったりなかったりします。
+
+例えば、下記の例だと `~/.mikutter/settings/test/data` かもしれませんし、 `~/.mikutter/settingstest/data` かもしれないので、誤りです。
+
+```ruby
+Environment::SETTINGDIR + "test/data"
+```
+
+こういう時は、 [File.join](https://docs.ruby-lang.org/ja/latest/method/File/s/join.html) を使います。
+
+```ruby
+File.join(Environment::SETTINGDIR, "test/data")
+# 以下のようにも書ける
+File.join(Environment::SETTINGDIR, "test", "data")
+```
+
+この方法では、どちらの場合も `~/.mikutter/settings/test` という結果を得られます。
+
+あるいは、現在mikutterではあまり使われていませんが、Ruby標準添付ライブラリの [Pathname](https://docs.ruby-lang.org/ja/latest/class/Pathname.html) を使うのも手です。
+
+```ruby
+Pathname(Environment::SETTINGDIR) / "test" / "data"
+```
+
