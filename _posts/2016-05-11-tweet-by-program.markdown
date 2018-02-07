@@ -9,18 +9,18 @@ categories:
 自動ツイートに限らず、プログラムで処理した結果を直接投稿したい場合、次のようなコードでできます。
 
 ```ruby
-Service.primary.post(message: "投稿したい内容")
+world, = Plugin.filtering(:world_current, nil)
+compose(world, message: "投稿したい内容")
 ```
 
 これで、「投稿したい内容」とツイートできます。
 
 ## 実用例
 
-次のコードは、毎日0時になったら自動的に「よるほー」とツイートする例です。24行目で`Service.primary.post`を使用しています。
+次のコードは、毎日0時になったら自動的に「よるほー」とツイートする例です。24行目で`compose`を使用しています。
 
 <script src="https://gist.github.com/toshia/1306093.js"></script>
 
 ## 参考
-- <a href="http://mikutter.hachune.net/rdoc/Service.html">Service</a>
-- <a href="http://mikutter.hachune.net/rdoc/Service.html#method-i-primary">Service.primary</a>
+- [compose(twitter) Spell]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#compose-twitter)
 - <a href="http://mikutter.hachune.net/rdoc/MikuTwitter/APIShortcuts.html#method-i-post">MikuTwitter::APIShortcuts#update</a>
