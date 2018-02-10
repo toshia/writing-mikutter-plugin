@@ -1,39 +1,39 @@
-= なにこれ
+== なにこれ
 mikutterプラグインを書く時のtipsです。Webでこのドキュメントを見るためには、以下のURLにアクセスしてください。
 
 https://reference.mikutter.hachune.net/
 
-= ローカルで見る
-== メリット
+== ローカルで見る
+=== メリット
 Writing mikutter pluginは、ローカルでWebサーバを起動して、 link:https://reference.mikutter.hachune.net/[Webページ]を見ることができます。インターネットがない環境でも快適にWriting mikutter pluginを見ることが出来るほか、自分でドキュメントを追記するときにも使えます。
 
-== 方法
-=== 初期設定
+=== 方法
+==== 初期設定
 link:https://github.com/toshia/writing-mikutter-plugin[GithubのWriting mikutter pluginのリポジトリのページ]にアクセスし、最新のコードを得ます。
 
 [source, sh]
----
+----
 $ git clone https://github.com/toshia/writing-mikutter-plugin.git
 $ cd writing-mikutter-plugin
 $ bundle --path=vendor/bundle
----
+----
 
-=== 起動
+==== 起動
 二回目以降起動するには、この手順のみを行います。
 
 [source, sh]
----
+----
 $ bundle exec jekyll server
----
+----
 
-以上のコマンドで、Webサーバが起動します。止める時は `Ctrl+c`を入力してください。
+以上のコマンドで、Webサーバが起動します。止める時は `Ctrl+c` を入力してください。
 
 これが動いている間に、 http://127.0.0.1:4000/ にアクセスすると、ローカルでWriting mikutter pluginを見ることができます。
 
-== ドキュメントを書く
+=== ドキュメントを書く
 Writing mikutter pluginは、link:https://jekyllrb.com/[Jekyll]を利用しており、Jekyllの機能を一通り使うことができます。
 
-= Contribute
+== Contribute
 Githubで、以下のリポジトリにpull-reqを送ってください。
 
 https://github.com/toshia/writing-mikutter-plugin
