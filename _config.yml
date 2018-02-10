@@ -16,6 +16,11 @@ url: "http://reference.mikutter.hachune.net" # the base hostname & protocol for 
 # Build settings
 markdown: kramdown
 
+asciidoc: {}
+asciidoctor:
+  attributes:
+  - source-highlighter=coderay
+
 exclude: ["vendor"]
 
 sass:
