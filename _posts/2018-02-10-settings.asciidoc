@@ -1,0 +1,399 @@
+---
+layout: post
+title:  "settings"
+date:   2018-02-10 00:00:00 +0900
+categories:
+- basis
+---
+
+[mikutter_settings]
+== 設定
+
+[mikutter_settings_source]
+=== ソース
+http://mikutter.blogspot.jp/2012/12/blog-post.html[設定をつけよう]
+
+[mikutter_settings_types_and_usage]
+=== 設定の種類とその書き方
+<<mikutter_settings_summary, settings>>においてUserConfigのキーを引数に持つ項目は、
+そのキーを使って設定値を取り出すことができる +
+例えばキーを +++:sample_key+++ とした場合は +++UserConfig[:sample_key]+++ と書けばよい +
+UserConfigの詳細についてはlink:/basis/2017/08/12/userconfig.html[Writing mikutter plugin]を参考にすること
+
+[mikutter_settings_summary]
+==== settings
+* 概要
++
+枠で囲む +
+
+* 書式
++
+[source, ruby]
+----
+settings(入力欄の説明)
+----
+
+* サンプルコード
++
+- 基本系
++
+[source,ruby]
+----
+# Slackプラグインの場合
+settings('sample_settings') do
+  # ここに各種設定項目
+end
+----
+
+- 入れ子
++
+settingsは入れ子にもできる
++
+[source,ruby]
+----
+# Slackプラグインの場合
+settings('sample_settings') do
+  # ここに各種設定項目
+  settings('sample_notification_settings') do
+    # ここに各種設定項目
+  end
+end
+----
+
+==== input
+* 概要
++
+一行テキストを追加する +
+
+* 書式
++
+[source, ruby]
+----
+input(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  input('ログイン名', :sample_user_id)
+end
+----
+
+==== inputpass
+* 概要
++
+パスワードの入力欄を追加する +
+入力欄では文字が +++*+++ になる
+
+* 書式
++
+[source, ruby]
+----
+inputpass(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  inputpass('パスワード', :sample_user_password)
+end
+----
+
+==== multi
+* 概要
++
+複数テキスト。ユーザはテキストボックスを追加ボタンで増やすことができ、各ボックスの値が配列に格納される +
+
+* 書式
++
+[source, ruby]
+----
+multi(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  multi('複数テキスト', :sample_settings_multi)
+end
+----
+
+
+==== multitext
+* 概要
++
+複数行のテキスト +
+
+* 書式
++
+[source, ruby]
+----
+multitext(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  multitext('複数行のテキスト', :sample_settings_multitext)
+end
+----
+
+==== select
+* 概要
++
+ハッシュの値から一つの要素を選択する +
+表示されるのはHashの値だが、格納されるのはキーの方 +
+普通はコンボボックスだが、bodyにウィジェットを入れたらラジオボタンになる +
+
+* 書式
++
+[source, ruby]
+----
+select(入力欄の説明, :UserConfigのキー, ハッシュ) do
+  # body
+end
+----
+
+* サンプルコード
++
+- コンボボックス
++
+[source,ruby]
+----
+settings('sample_settings') do
+  hash = { 0 => '上', 1 => '下', 2 => '左', 3 => '右' }
+  select('セレクト', :sample_settings_select, hash)
+end
+----
+
+- ラジオボタン
++
+[source,ruby]
+----
+settings('sample_settings') do
+  hash = { 0 => '上', 1 => '下', 2 => '左', 3 => '右' }
+  select('セレクト', :sample_settings_select) do
+    option(:sample_option, 'ラジオボタンオプション') do
+      input('ラジオボタン内オプション', :opt1)
+    end
+  end
+end
+----
+
+
+==== multiselect
+* 概要
++
+select ウィジェットの複数選択奴 +
+選ばれた値がすべて配列で格納される +
+bodyにウィジェットがあればチェックボックスになる
+
+* 書式
++
+[source, ruby]
+----
+multiselect(入力欄の説明, :UserConfigのキー) do
+  # body
+end
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  multiselect('複数セレクト', :sample_settings_multiselect) do
+    option(:opt1, 'オプション1') do
+      hash = {0 => 'opt1', 1 => 'opt2'}
+      select('複数セレクト内オプション', :opt1_select, hash)
+    end
+    option(:opt2, 'オプション2')
+    option(:opt3, 'オプション3')
+  end
+end
+----
+
+
+==== fileselect
+* 概要
++
+ファイル選択 +
+設定にはファイルの絶対パスが文字列で入る +
+dirはダイアログが最初に開くディレクトリで省略可
+
+* 書式
++
+[source, ruby]
+----
+fileselect(入力欄の説明, :UserConfigのキー, 最初のディレクトリ名)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  fileselect('ファイルの取得', :sample_settings_fileselect)
+  fileselect('ファイルの取得（パス指定あり）', :sample_settings_fileselect, '/')
+end
+----
+
+==== adjustment
+* 概要
++
+minからmaxまでの数値の設定
+
+* 書式
++
+[source, ruby]
+----
+adjustment(入力欄の説明, :UserConfigのキー, min, max)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  adjustment('取得件数', :sample_adjustment, 0, 200)
+end
+----
+
+==== boolean
+* 概要
++
+チェックボックス
+
+* 書式
++
+[source, ruby]
+----
+boolean(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  boolean('お知らせを表示する', :sample_show_notification)
+end
+----
+
+[[mikutter_sample_settings_color]]
+==== color
+* 概要
++
+色選択ダイアログ +
+[RRRR,GGGG,BBBB]のような配列で値を保持する +
+各要素の最大値は0xFFFF
+
+* 書式
++
+[source, ruby]
+----
+color(入力欄の説明, :UserConfigのキー)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  color('色を設定', :sample_color)
+end
+----
+
+==== fontcolor
+* 概要
++
+フォントとその色を設定する +
+フォントキーの値にフォントの情報が文字列で、
+カラーキーの値には <<mikutter_sample_settings_color, colorウィジェット>> の値が格納される
+
+* 書式
++
+[source, ruby]
+----
+fontcolor(入力欄の説明, :UserConfigのキー（フォント）, :UserConfigのキー（色）)
+----
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  fontcolor('フォント設定', :sample_fontcolor_font, :sample_fontcolor_color)
+end
+----
+
+==== about
+* 概要
++
+プラグインのクレジット表記 +
+
+* 書式
++
+[source, ruby]
+----
+about(入力欄の説明, options)
+----
+
+* オプション一覧
++
+program_name:: ソフトウェア名
+version:: バージョン
+copyright:: コピーライト
+comments:: コメント
+license:: ライセンス
+website:: Webページ
+logo:: ロゴ画像のフルパス
+authors:: 作者の名前（文字列配列）
+artists:: デザイナとかの名前（文字列配列）
+documenters:: ドキュメントかいた人とかの名前（文字列配列）
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  about('%s について' % "sample app",
+        program_name: "sample app",
+        copyright: '2016-2018 ahiru',
+        version: "0.0.1",
+        comments: "mikutter pluginのサンプル",
+        license: (file_get_contents('./LICENSE') rescue nil),
+        website: 'https://...',
+        logo: 'path/to/logo',
+        authors: %w[ahiru3net],
+        artists: %w[foo],
+        documenters: %w[ahiru3net hoge foo])
+end
+----
+
+==== ツールチップ
+各設定コンポーネントに +++.tooltip()+++ をチェーンすることで、
+その設定にツールチップを追加できる
+
+* サンプルコード
++
+[source,ruby]
+----
+settings('sample_settings') do
+  input('ツールチップ用input', :sample_settings_input)
+    .tooltip('inputにホバーしてると表示される')
+end
+----
+
+=== サンプルプラグイン
+以下のプラグインをインストール・実行することで設定画面に全ての設定項目を確認できます。
+
+https://github.com/Na0ki/mikutter_sample_settings[mikutter_sample_settings]
