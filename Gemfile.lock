@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    asciidoctor (1.5.6.1)
     colorator (1.1.0)
     ffi (1.9.14)
     forwardable-extended (2.6.0)
@@ -14,6 +15,9 @@ GEM
       pathutil (~> 0.9)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
+    jekyll-asciidoc (2.1.0)
+      asciidoctor (>= 1.5.0)
+      jekyll (>= 2.3.0)
     jekyll-sass-converter (1.4.0)
       sass (~> 3.4)
     jekyll-watch (1.5.0)
@@ -39,6 +43,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll
+  jekyll-asciidoc
   kramdown
   rake
 
@@ -46,4 +51,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.1
+   1.16.1
