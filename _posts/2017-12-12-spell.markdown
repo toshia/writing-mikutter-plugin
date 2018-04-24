@@ -100,7 +100,7 @@ end
 
 ## Spellを定義する
 
-mikutter 3.6では、これらをSpellと名付け、Modelではなくプラグインで定義するようにしました。
+Pluginコンテキストで、 `defspell` メソッドを呼び出すことで定義できます。
 
 ```ruby
 Plugin.create(:sample) do
@@ -112,5 +112,13 @@ Plugin.create(:sample) do
 end
 ```
 
-`condition:` 引数で、ブロックが呼ばれる前提条件を設定することができます。conditionがfalseを返せば、ブロックが呼ばれずに呼び出しは失敗します。
+**defspell(name, *model_slug, condition:)** という形式で、
 
+- *name* Spellの名前(Symbol)
+- *model_slug* 引数となるModelのリスト(順不同、Symbol)
+- *condition:* 前提条件(Proc)。省略可能
+- *ブロック* Spellの処理本体。必須
+
+という意味です。
+
+[spell name\[spell arguments\]]({{ site.baseurl }}{% post_url 2017-11-28-spell %}#-)
