@@ -1,0 +1,184 @@
+---
+layout: post
+title:  "Score"
+date:   2018-04-24 00:00:00 +0900
+categories:
+- basis
+---
+== Scoreとは
+
+mikutterプラグインでは、Message Modelの本文の一部に対して、次のようなことができます。
+
+* 一部分をWebページへのリンクにする
+* `@toshi_a` のような文字列をTwitterのユーザページへのリンクにする
+* 本文の途中に絵文字を埋め込む
+
+このようなことを実現するための仕組みとして、Scoreが存在します。
+
+例えばTwitterには、 `@user` のようなユーザ名へのリンク、 `#hashtag` のようなハッシュタグへのリンク、URLをクリックしたらブラウザを開くといった仕様がありますが、本文のある部分をクリックした時に何をするかといったことをセマンティックに表現するための仕組みです。
+
+== 概要
+
+=== Scoreによって本文が装飾される条件
+
+Scoreは本文に対して働きますが、具体的には対象となるModelの `description` メソッドが返すlink:https://docs.ruby-lang.org/ja/latest/class/String.html[String]です。このメソッドが実装されていれば、例えばMiraclePainterなどがScoreを利用しようとします。
+
+=== Note
+
+Scoreの実態はModelの配列です。例えば次のようなdescriptionをもつModelがあったとして:
+
+[quote]
+----
+現在の私の心境です http://twitpic.com/d250g2
+----
+
+これをScoreで表現すると、 `http://twitpic.com/d250g2` の部分は外部WEBページなのでWeb Modelですが、 `現在の私の心境です` の部分はただのテキストなので、Modelで表現できません。
+
+そこでScoreプラグインでは、単なるテキストを表す印として `Diva::Model(:text_note)` というModelを利用します。このModelは、 `description` フィールドだけを持っています。
+
+これを利用すると、先の文章は以下のようなScoreで表現できます。
+
+[source, ruby]
+----
+[
+  Diva::Model(:text_note).new(description: "現在の私の心境です "),
+  Diva::Model(:web).new(perma_link: "http://twitpic.com/d250g2")
+]
+----
+
+=== Scoreを提案する
+
+==== 特定のModel専用のScore
+
+MiraclePainterなどに本文を表示する時に利用されるScoreは、プラグインが `score_filter` フィルタを通して提案します。
+
+**score_filter (model, note, yielder)**
+
+model:: Scoreを問い合わせる対象となっているModel (Diva::Model)
+note:: Scoreを得たい部分文字列を指すtext_note (Diva::Model)
+yielder:: フィルタがScoreを提案できるなら、 `yielder#<<` でScoreを挿入する
+
+たとえば、以下のようなMessage Modelがあるとしましょう。
+
+[source, ruby]
+----
+class ScoreExampleMessage < Diva::Model
+  register :score_example_message
+  field.string :description
+end
+----
+
+これに対するScoreを提案するフィルタを書きます。
+
+[source, ruby]
+----
+Plugin.create(:score_example) do
+  filter_score_filter do |sem, note, yielder|
+  if sem.class.slug == :score_example_message
+  yielder << []
+  end
+  end
+end
+----
+
+という具合に、Scoreを `yielder#<<` で挿入しています。modelが score_example_message ModelではないならとくにScoreは提案しません。この条件がないと、どのようなModelにも適用されるScoreを提案することになってしまいます。そのようなことをすると「ツイートのハッシュタグをクリックできなくなった」といった事態になりかねないので、必ずこのような条件を加えてください。
+
+==== 汎用Score
+
+一方で、全てのModelに適用されることが好ましいScoreと言うのもありえます。例えば「殺す」という部分文字列を「ケアする」という言葉に置き換えるScoreを提案することを考えてみましょう。このルールは先の score_example_message を初め、Tweetなどの外部プラグインで追加される全てのModelに適用したいとします。
+
+[source, ruby]
+----
+Plugin.create(:score_example) do
+  filter_score_filter do |sem, note, yielder|
+    if sem != note
+      yielder << []
+    end
+  end
+end
+----
+
+`if sem != note` の部分が、汎用Scoreを提案するタイミングを判定する式です。
+
+=== Scoreの問い合わせの仕組み
+
+Scoreが複数提案された場合、一定のルールに従って一つのScoreを最終的に選択します。
+
+==== Noteとしてmodelを渡す
+
+まず、 **score_filter** の第一引数と第二引数に対象となるModelをセットして呼び出します。
+
+Noteの要件は `description` メソッドが定義されていることですが、Scoreを問い合わせる対象となるModelの要件も `description` が存在することです。最初の呼び出しでは、本文の全範囲に対してScoreを問い合わせたいため、いちいち text_note を作らず、Model自体を text_note の代わりに使っています。
+
+==== modelと同じdescriptionを持つNoteを作る
+
+<<Noteとしてmodelを渡す,Noteとしてmodelを渡す>> の条件でひとつもScoreが提案されなかった場合、今度は、 `model.description` をdescriptionとして持つ text_note を **score_filter** の第二引数として渡して呼び出します。
+
+同じ範囲なので一見意味がないことに見えますが、第二引数が text_note の場合は次節にもあるとおり、部分文字列に対するScoreの問い合わせです。
+
+したがって、どのようなModelに対してもScoreを提案したいプラグインは、 `model != note` な場合のみScoreを提案するようにすれば、そのmodelに本来適用されるべきScoreを邪魔してしまうことがありません。
+
+==== 選ばれたScoreのTextNoteをNoteとしてscore_filterを再度呼び出す
+
+以上のどちらかの方法でScoreが一つでも返ってくれば、 <<Score選定アルゴリズム,Score選定アルゴリズム>> に従って一つのScoreが選ばれて、表示に使われます。
+
+ここで選ばれたScoreにTextNoteが含まれる場合は、それを第二引数として `score_filter` が呼ばれ、その text_note の代わりに使われます。もちろんその中に text_note がある場合も再帰的に展開されます。
+
+それぞれの **score_filter** のリスナは、URLやカスタム絵文字といった一つの要素に集中していても、Noteを提案することができなかった部分を text_note にしておけば、再帰的に展開されることで最終的には全てのルールが適用されたScoreが出来上がるのです。先のケアするプラグインなんかは、TweetのScoreが展開された後に再帰呼び出しされた時に動くため、ハッシュタグやURLを展開したうえで文字列の置換を行うことが出来ています。
+
+=== Score選定アルゴリズム
+
+前節で述べたように、 **score_filter** は何度も呼び出されますが、 **score_filter** が二つ以上Scoreを提案した場合、毎回次のような選定アルゴリズムで、一つのScoreを絞り込みます。
+
+==== 最も早く text_note が出てくるものを優先する
+
+提案された全てのScoreに対して、text_note 以外のNoteが出現するまでに、先行する text_note が何文字あるかを調べ、最も字数が少ないものを選びます。
+
+最初のNoteが text_note 以外であれば0となり最優先され、 text_note だけで構成されていれば全体の文字数ぶんの点数がつき、最も低い優先順位になります。
+
+==== Scoreを構成するNoteの数が最も多いもの
+
+それでも複数のScoreが残る場合は、Scoreを構成するNoteの数を比べます。Scoreはただの配列ですので、配列の長さが最も長いものが使われるということです。
+
+これでも一つに絞れなかった場合は、結果は不定です。その時候補リストにあったもののうち一番上にあるものを適当に使います。もっともこの仕様はまず問題になりません。 **score_filter** の再帰的な適用によって、どれを選んでも結局同じ結果になることを期待できるからです。
+
+= Noteの種類
+
+Noteは、定められたメソッドを実装し、ルールを満たした **Diva::Model** ですが、厳密には以下のように幾つか種類があります。
+
+== Text Note
+
+=== 実装するメソッド
+
+description:: このNoteが含む本文(String)
+
+=== 概要
+
+Scoreのなかで、その部分に表示するテキストを表すものです。ルールが単純なため多くのModelが利用できます。
+
+また、 **score** プラグインに依存することになりますが、 `Diva::Model(:text_note).new(description: "foobar")` という単純なコードでTextNoteを得ることが出来ます。
+
+=== Hyper Link Note
+
+=== 実装するメソッド
+
+description:: リンク文字列(String)
+
+=== その他の要件
+
+Intentを用いて、そのModelを開く方法を提供しておく。
+
+=== 概要
+
+Text Noteとほぼ同じですが、Intentプラグインと連携し、そのModelを開く方法を一つでも提供しておくと、Hyper Link Noteとなります。通知テキストのようなクリッカブルではない場所に印字される場合にはText Noteと同じように扱われてしまいますが、Miracle Painterに描画されるときには下線が引かれた状態でdescriptionの文字列が表示され、クリックするとそのModelに対してIntentが発行されます。
+
+=== Emoji Note
+
+=== 実装するメソッド
+
+inline_photo:: 絵文字として表示する画像のPhoto Model
+description:: 代替テキスト
+
+MiraclePainterは、 `inline_photo` メソッドが実装されたNoteが出現すると、本来文字を表示する場所に、画像を表示します。描画される高さはその時のフォントサイズと同じです。正方形なので幅も同じ値です。
+
+通知テキストなど、画像を表示できない場合には `description` の文字列が使われます。
