@@ -239,7 +239,7 @@
             font-size: 18px;
         }
     }
-    indent-tabs-mode
+
     @for $i from 1 through 5 {
         .sect#{$i} {
             border-left: 8px #eee solid;
