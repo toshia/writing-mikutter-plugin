@@ -34,14 +34,14 @@ Scoreの実態はModelの配列です。例えば次のようなdescriptionを�
 
 これをScoreで表現すると、 `http://twitpic.com/d250g2` の部分は外部WEBページなのでWeb Modelですが、 `現在の私の心境です` の部分はただのテキストなので、Modelで表現できません。
 
-そこでScoreプラグインでは、単なるテキストを表す印として `Diva::Model(:text_note)` というModelを利用します。このModelは、 `description` フィールドだけを持っています。
+そこでScoreプラグインでは、単なるテキストを表す印として `Diva::Model(:score_text)` というModelを利用します。このModelは、 `description` フィールドだけを持っています。
 
 これを利用すると、先の文章は以下のようなScoreで表現できます。
 
 [source, ruby]
 ----
 [
-  Diva::Model(:text_note).new(description: "現在の私の心境です "),
+  Diva::Model(:score_text).new(description: "現在の私の心境です "),
   Diva::Model(:web).new(perma_link: "http://twitpic.com/d250g2")
 ]
 ----
@@ -55,7 +55,7 @@ MiraclePainterなどに本文を表示する時に利用されるScoreは、プ�
 **score_filter (model, note, yielder)**
 
 model:: Scoreを問い合わせる対象となっているModel (Diva::Model)
-note:: Scoreを得たい部分文字列を指すtext_note (Diva::Model)
+note:: Scoreを得たい部分文字列を指すText Note (Diva::Model)
 yielder:: フィルタがScoreを提案できるなら、 `yielder#<<` でScoreを挿入する
 
 たとえば、以下のようなMessage Modelがあるとしましょう。
@@ -108,13 +108,13 @@ Scoreが複数提案された場合、一定のルールに従って一つのSco
 
 まず、 **score_filter** の第一引数と第二引数に対象となるModelをセットして呼び出します。
 
-Noteの要件は `description` メソッドが定義されていることですが、Scoreを問い合わせる対象となるModelの要件も `description` が存在することです。最初の呼び出しでは、本文の全範囲に対してScoreを問い合わせたいため、いちいち text_note を作らず、Model自体を text_note の代わりに使っています。
+Noteの要件は `description` メソッドが定義されていることですが、Scoreを問い合わせる対象となるModelの要件も `description` が存在することです。最初の呼び出しでは、本文の全範囲に対してScoreを問い合わせたいため、いちいち Text Note を作らず、Model自体を Text Note の代わりに使っています。
 
 ==== modelと同じdescriptionを持つNoteを作る
 
-<<Noteとしてmodelを渡す,Noteとしてmodelを渡す>> の条件でひとつもScoreが提案されなかった場合、今度は、 `model.description` をdescriptionとして持つ text_note を **score_filter** の第二引数として渡して呼び出します。
+<<Noteとしてmodelを渡す,Noteとしてmodelを渡す>> の条件でひとつもScoreが提案されなかった場合、今度は、 `model.description` をdescriptionとして持つ Text Note を **score_filter** の第二引数として渡して呼び出します。
 
-同じ範囲なので一見意味がないことに見えますが、第二引数が text_note の場合は次節にもあるとおり、部分文字列に対するScoreの問い合わせです。
+同じ範囲なので一見意味がないことに見えますが、第二引数が Text Note の場合は次節にもあるとおり、部分文字列に対するScoreの問い合わせです。
 
 したがって、どのようなModelに対してもScoreを提案したいプラグインは、 `model != note` な場合のみScoreを提案するようにすれば、そのmodelに本来適用されるべきScoreを邪魔してしまうことがありません。
 
@@ -122,19 +122,19 @@ Noteの要件は `description` メソッドが定義されていることです�
 
 以上のどちらかの方法でScoreが一つでも返ってくれば、 <<Score選定アルゴリズム,Score選定アルゴリズム>> に従って一つのScoreが選ばれて、表示に使われます。
 
-ここで選ばれたScoreにTextNoteが含まれる場合は、それを第二引数として `score_filter` が呼ばれ、その text_note の代わりに使われます。もちろんその中に text_note がある場合も再帰的に展開されます。
+ここで選ばれたScoreにTextNoteが含まれる場合は、それを第二引数として `score_filter` が呼ばれ、そのText Noteの代わりに使われます。もちろんその中にText Noteがある場合も再帰的に展開されます。
 
-それぞれの **score_filter** のリスナは、URLやカスタム絵文字といった一つの要素に集中していても、Noteを提案することができなかった部分を text_note にしておけば、再帰的に展開されることで最終的には全てのルールが適用されたScoreが出来上がるのです。先のケアするプラグインなんかは、TweetのScoreが展開された後に再帰呼び出しされた時に動くため、ハッシュタグやURLを展開したうえで文字列の置換を行うことが出来ています。
+それぞれの **score_filter** のリスナは、URLやカスタム絵文字といった一つの要素に集中していても、Noteを提案することができなかった部分をText Noteにしておけば、再帰的に展開されることで最終的には全てのルールが適用されたScoreが出来上がるのです。先のケアするプラグインなんかは、TweetのScoreが展開された後に再帰呼び出しされた時に動くため、ハッシュタグやURLを展開したうえで文字列の置換を行うことが出来ています。
 
 === Score選定アルゴリズム
 
 前節で述べたように、 **score_filter** は何度も呼び出されますが、 **score_filter** が二つ以上Scoreを提案した場合、毎回次のような選定アルゴリズムで、一つのScoreを絞り込みます。
 
-==== 最も早く text_note が出てくるものを優先する
+==== 最も早くText Note以外のModelが出てくるものを優先する
 
-提案された全てのScoreに対して、text_note 以外のNoteが出現するまでに、先行する text_note が何文字あるかを調べ、最も字数が少ないものを選びます。
+提案された全てのScoreに対してText Note以外のModelが出現するまでに、先行するText Noteが何文字あるかを調べ、最も字数が少ないものを選びます。
 
-最初のNoteが text_note 以外であれば0となり最優先され、 text_note だけで構成されていれば全体の文字数ぶんの点数がつき、最も低い優先順位になります。
+最初のNoteがText Note以外であれば0となり最優先され、Text Noteだけで構成されていれば全体の文字数ぶんの点数がつき、最も低い優先順位になります。
 
 ==== Scoreを構成するNoteの数が最も多いもの
 
@@ -156,7 +156,7 @@ description:: このNoteが含む本文(String)
 
 Scoreのなかで、その部分に表示するテキストを表すものです。ルールが単純なため多くのModelが利用できます。
 
-また、 **score** プラグインに依存することになりますが、 `Diva::Model(:text_note).new(description: "foobar")` という単純なコードでTextNoteを得ることが出来ます。
+また、 **score** プラグインに依存することになりますが、 `Diva::Model(:score_text).new(description: "foobar")` という単純なコードでTextNoteを得ることが出来ます。
 
 === Hyper Link Note
 
