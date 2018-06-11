@@ -27,10 +27,10 @@ Scoreは本文に対して働きますが、具体的には対象となるModel�
 
 Scoreの実態はModelの配列です。例えば次のようなdescriptionをもつModelがあったとして:
 
-[quote]
-----
+.description
+====
 現在の私の心境です http://twitpic.com/d250g2
-----
+====
 
 これをScoreで表現すると、 `http://twitpic.com/d250g2` の部分は外部WEBページなのでWeb Modelですが、 `現在の私の心境です` の部分はただのテキストなので、Modelで表現できません。
 

@@ -252,8 +252,18 @@
         }
     }
 
-    .paragraph, .dlist, .listingblock {
+    .paragraph, .dlist, .listingblock, .exampleblock {
         margin-left: 1em;
+    }
+
+    .exampleblock{
+        .title {
+            font-size: 0.8em;
+            font-style: italic;
+        }
+        .content {
+            border-left: 4px #eee solid;
+        }
     }
 }
 
