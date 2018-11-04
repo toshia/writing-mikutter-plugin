@@ -13,8 +13,7 @@ mikutter 3.5からは、テクスチャやアイコン等、ありとあらゆ�
 == Photo Modelとは
 
 
-Photo Modelとは、
-*特定の一つのModelを指す言葉ではなく、画像を表わすModelの総称* です。
+Photo Modelとは、*特定の一つのModelを指す言葉ではなく、画像を表わすModelの総称*です。
 
 具体的には、次のメソッドを実装したModelのことです。
 
@@ -35,22 +34,14 @@ Modelは、必ずこの {url-photomixin}[Diva::Model::PhotoMixin] をincludeし�
 * load_pixbuf
 * pixbuf
 
-== ねらい
+== 利用する場面
+mikutterでは、タイムライン上のユーザのアイコンや、タブ、mikutterコマンド等、ところで画像を使っています。
 
-mikutterでは、タイムライン上のユーザのアイコンや、タブ、mikutterコマンド等、いろんなものに画像を使われていますが、あるときはPixbufを渡したり、ある場所では画像のパスやURLを渡したりと、同じ画像を扱うのにインターフェイスが統一されておらず、プラグイン作成の学習コストが上がる一因となっていました。mikutter
-3.5では、互換性を保つために従来の方法は残しながらも、全ての画像を受け取る場所でPhoto
-Modelを受け付けるようにし、Photo
-Modelを渡すのを全ての場所で推奨しています。
+しかしあるときはPixbufを渡したり、ある場所では画像のパスやURLを渡したりと、指定方法に一貫性がありませんでした。
 
-キャッシュの効率も向上しました。例えばいくつかのサードパーティプラグインを入れて「タイムラインに表示された画像のサムネイルをクリックしてイメージビューアで画像を見て、それをローカルに保存」する時には、今までだと
-
-* タイムラインにサムネイルが表示された時
-* イメージビューアで画像を開く時
-* それをローカルに保存する時
-
-の3回ダウンロードされていました。Photo
-Modelの登場のおかげで、全ての画像は短時間であればメモリキャッシュされ、ダウンロードの回数を減らすことを期待できるようになりました。他にも、画像をメモリ上で可能な限り共有し、同じ画像が重複してメモリ上に存在しにくい作りになっているなど、サードパーティプラグインでPhoto
-Modelを採用すればユーザにも大きなメリットがあります。
+mikutter 3.5では、画像を扱う全ての場所にPhoto Modelを使うことができます。
+互換性のためにそれぞれの場所では一貫性のない従来の方法も残ってはいますが、
+今後はPhoto Modelの使い方さえ学習すれば全ての場所で同じ方法で画像を指定できるのです。
 
 == Photo Modelを得る
 
@@ -87,12 +78,9 @@ Skin['icon.png']
 Skin.photo('icon.png')
 ----
 
-このPhoto Modelは少し特殊で、当然 *download*
-のようなメソッドは使えますが、 *pixbuf*
-メソッドが若干異なる挙動をします。
+このPhoto Modelは少し特殊で、当然 *download*のようなメソッドは使えますが、*pixbuf*メソッドが若干異なる挙動をします。
 
-*pixbuf* メソッドは、メモリ上にその画像の GdkPixbuf::Pixbuf
-があればそれを返し、無ければnilを返すメソッドですが、Skinに限っては、メモリ上に無ければロードしてPixbufを作成します。決してnilを返すことはありません。
+*pixbuf* メソッドは、メモリ上にその画像の GdkPixbuf::Pixbuf があればそれを返し、無ければnilを返すメソッドですが、Skinに限っては、メモリ上に無ければロードしてPixbufを作成します。決してnilを返すことはありません。
 
 == Photo Modelを使う
 
@@ -110,3 +98,65 @@ Plugin.call(:open, photo)
 
 UserMixinをincludeしたModelのiconメソッドでPhotoを返せば、これがアイコンとして扱われます。
 
+== Photo Variant
+
+通常の利用では、Photo Variantを意識する必要はありません。単に画像を得たいだけなら<<Photo Modelを得る>>を参照しましょう。
+
+=== Photo Variantとは
+
+いくつかの画像配信サービスは、一覧表示用の小さい画像と、フルサイズの画像といった、同じ画像の複数の画像を配信していることがあります。
+
+Photo Modelは要求された時には、どこに表示されるか分かりません。例えばTwitterのアイコンは、72px四方で描画されることもあれば、16px四方で描画されることもあります。
+
+こういった場合に、常にオリジナルサイズの画像を使わず、できるだけ小さな画像を使うようにすれば、ダウンロードを高速化できる可能性があります。
+
+Photo Variantは、本質的には同じ画像の複数のサイズをまとめたPhoto Modelです。
+
+=== Photo Varintを作る
+
+例えば、 `https://example.com/image.png` というURLがあったとしましょう。この画像サービスでは、URLの拡張子の前に `_32` または `_64` とつけることで、それぞれ32px四方、64px四方の画像が得られるとします。
+
+そのような場合には、以下のようなコードでPhoto Modelを作ると、画像を表示する時に毎回できるだけ小さな画像が自動的に選ばれます。
+
+Photo Variantを作るコードは複雑にならざるを得ません。World系プラグインのようなもともと複雑なプラグインや、画像サポートを追加するプラグインのような専用プラグインであれば対応する価値はあります。
+
+標準添付プラグインでは、Twitterの画像及びユーザアイコンに対するPhoto Modelは、Photo Variantを使っています。
+
+[source,ruby]
+----
+photo = Diva::Model(:photo).generate(
+  [
+    {
+      name: :small,
+      width: 32,
+      height: 32,
+      policy: :fit,
+      photo: "https://example.com/image_32.png"
+    },
+    {
+      name: :medium,
+      width: 64,
+      height: 64,
+      policy: :fit,
+      photo: "https://example.com/image_64.png"
+    },
+    {
+      policy: :original,
+      photo: "https://example.com/image.png"
+    }
+  ],
+  perma_link: "https://example.com/image.png"
+)
+----
+
+==== photo
+
+`Diva::Model(:photo).generate` の最初の引数のHashのArrayの中に登場する `photo` は、Photo Modelを渡すこともできます。URLを渡すと単純にダウンロードしてきてしまうので、認証などの複雑な手順がいる場合はPhoto Modelを渡したほうが確実です。
+
+==== policy
+
+このキーには以下の種類があり、それ以外の値だとそのvariantは利用されません。
+これは現在、Photo Modelはアスペクト比を保って拡大・縮小した画像にしか対応していないため、画像フォーマットが違うだけだったりcropされたものを扱えないからです。
+
+original:: 最大サイズの画像です。このpolicyは、一度にgenerateに渡す画像の中では1個だけにしてください。
+fit:: originalをアスペクト比を保って縮小したものです。画像サイズは `width` と `height` キーにピクセル単位で記述します。また、 `name` は管理用で、デバッグメッセージにのみ利用されます。
