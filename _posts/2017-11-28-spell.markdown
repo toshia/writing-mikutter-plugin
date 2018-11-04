@@ -22,14 +22,14 @@ categories:
 
 ### 戻り値
 
-削除したツイートに対応する Plugin::Twitter::Tweet のインスタンス。
+削除したツイートに対応する Plugin::Twitter::Message のインスタンス。
 
 ### 例
 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+tweet = # (自身が行ったツイートの Plugin::Twitter::Message)
 
 destroy(world, tweet).next{|tweet|
   puts "ツイート「#{tweet}」 を削除しました"
@@ -58,14 +58,14 @@ destroy(world, tweet).next{|tweet|
 
 ### 戻り値
 
-リツイート自身の Plugin::Twitter::Tweet のインスタンス。
+リツイート自身の Plugin::Twitter::Message のインスタンス。
 
 ### 例
 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (自身が行ったツイートの Plugin::Twitter::Tweet)
+tweet = # (自身が行ったツイートの Plugin::Twitter::Message)
 
 destroy_share(world, tweet).next{|tweet|
   puts "ツイート「#{tweet}」 を削除しました"
@@ -94,14 +94,14 @@ destroy_share(world, tweet).next{|tweet|
 
 ### 戻り値
 
-お気に入りに追加したツイートに対応する Plugin::Twitter::Tweet
+お気に入りに追加したツイートに対応する Plugin::Twitter::Message
 
 ### 例
 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweetのインスタンス)
+tweet = # (Plugin::Twitter::Messageのインスタンス)
 
 favorite(world, tweet).next{|favorited_tweet|
   puts favorited_tweet
@@ -141,7 +141,7 @@ favorite(world, tweet).next{|favorited_tweet|
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = Plugin::Twitter::Message.findbyid(939122988460285954) # (Plugin::Twitter::Tweetのインスタンス)
+tweet = Plugin::Twitter::Message.findbyid(939122988460285954) # (Plugin::Twitter::Messageのインスタンス)
 notice favorited?(world, tweet)
 ```
 結果
@@ -203,13 +203,13 @@ false
 
 - **visibility** 公開範囲。 `:public` の場合は通常のツイート、 `:direct` の場合はダイレクトメッセージとなる。省略するか `nil` の場合は、 `to` がダイレクトメッセージの場合はdirectを、それ以外の場合はpublicを指定されたものと見做す。
 
-- **to** 宛先となる Plugin::Twitter::User または Plugin::Twitter::Tweet のインスタンスを列挙するEnumerable。混在してもよく、ツイートが含まれる場合は、投稿されるツイートは最初に見つかったツイートに対するリプライとなる。1件だけの場合は、配列ではなくインスタンスを直接渡すことも出来る。宛先がない場合は省略するか `nil` または `[]` を渡す。
+- **to** 宛先となる Plugin::Twitter::User または Plugin::Twitter::Message のインスタンスを列挙するEnumerable。混在してもよく、ツイートが含まれる場合は、投稿されるツイートは最初に見つかったツイートに対するリプライとなる。1件だけの場合は、配列ではなくインスタンスを直接渡すことも出来る。宛先がない場合は省略するか `nil` または `[]` を渡す。
 
 
 
 ### 戻り値
 
-投稿した Plugin::Twitter::Tweet のインスタンス。
+投稿した Plugin::Twitter::Message のインスタンス。
 
 ### 例
 
@@ -246,7 +246,7 @@ compose(world, body: "うんこでた").next{|t|
 #### リプライを送る
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweet のインスタンス)
+tweet = # (Plugin::Twitter::Message のインスタンス)
 
 compose(world, body: "うんこでた", to: tweet)
 ```
@@ -280,14 +280,14 @@ compose(world, body: "うんこでた", to: tweet)
 
 ### 戻り値
 
-投稿した Plugin::Twitter::Tweet のインスタンス。
+投稿した Plugin::Twitter::Message のインスタンス。
 
 ### 例
 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweet のインスタンス)
+tweet = # (Plugin::Twitter::Message のインスタンス)
 
 compose(world, tweet, body: "うんこでた")
 ```
@@ -321,7 +321,7 @@ compose(world, tweet, body: "うんこでた")
 
 ### 戻り値
 
-投稿した Plugin::Twitter::Tweet のインスタンス。
+投稿した Plugin::Twitter::Message のインスタンス。
 
 ### 例
 
@@ -423,7 +423,7 @@ Twitter APIの制約上、正確に取得できるとは限らない。
 ### 戻り値
 
 検索結果を列挙するEnumerable。
-列挙される各ツイートはPlugin::Twitter::Tweetのインスタンス。
+列挙される各ツイートはPlugin::Twitter::Messageのインスタンス。
 
 ### 例
 
@@ -472,7 +472,7 @@ cametan_001: 【MAD】 Mikutter Ad. 【Long Version】: https://t.co/0GYL2hwd3U 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweetのインスタンス)
+tweet = # (Plugin::Twitter::Messageのインスタンス)
 
 unfavorite(world, tweet).next{|unfavorited_tweet|
   puts unfavorited_tweet
@@ -501,14 +501,14 @@ Twitterで、リツイートを行う。
 
 ### 戻り値
 
-リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)
+リツイートした結果生成されたツイート(Plugin::Twitter::Message)
 
 ### 例
 
 
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweetのインスタンス)
+tweet = # (Plugin::Twitter::Messageのインスタンス)
 
 share(world, tweet).next{|share|
   puts share
@@ -524,7 +524,7 @@ RT: @toshi_a うんこでた
 
 ### 説明
 
-アカウント `twitter` が `tweet` をリツイートした時の `Plugin::Twitter::Tweet` を取得する。APIリクエストを発生させず、Tweetオブジェクトに入っている状態のみを参照する。Twitter APIからこの情報を正確に取得する方法は提供されていない。
+アカウント `twitter` が `tweet` をリツイートした時の `Plugin::Twitter::Message` を取得する。APIリクエストを発生させず、Tweetオブジェクトに入っている状態のみを参照する。Twitter APIからこの情報を正確に取得する方法は提供されていない。
 
 `shared` はAPIに問い合わせず、分かる範囲で既にリツイートしている場合はそのtweetを、わからないか、リツイートしていない場合は失敗する。
 
@@ -543,7 +543,7 @@ RT: @toshi_a うんこでた
 
 ### 戻り値
 
-リツイートした結果生成されたツイート(Plugin::Twitter::Tweet)
+リツイートした結果生成されたツイート(Plugin::Twitter::Message)
 
 ### 例
 
@@ -552,7 +552,7 @@ RT: @toshi_a うんこでた
 #### リツイートをすでにしていれば、そのIDを出力
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = Message.findbyid(933936591445331968)# (Plugin::Twitter::Tweetのインスタンス)
+tweet = Message.findbyid(933936591445331968)# (Plugin::Twitter::Messageのインスタンス)
 
 shared(world, tweet).next{|share|
   notice share.id
@@ -569,7 +569,7 @@ shared(world, tweet).next{|share|
 #### リツイートをすでにしていれば、「もうリツイートしているみたいです」と表示
 ```ruby
 world, = Plugin.filtering(:world_current, nil)
-tweet = # (Plugin::Twitter::Tweetのインスタンス)
+tweet = # (Plugin::Twitter::Messageのインスタンス)
 
 if shared?(world, tweet)
   puts "もうリツイートしているみたいです"
